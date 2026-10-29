@@ -582,14 +582,24 @@
               </select>
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label for="cfgConvocatoria_dateText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha sugerida</label>
-              <input type="text" id="cfgConvocatoria_dateText" name="cfgConvocatoria_dateText" placeholder="Ej: 29 de septiembre" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgConvocatoria_eventDate" class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha por defecto</label>
+              <input type="date" id="cfgConvocatoria_eventDate" name="cfgConvocatoria_eventDate" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label for="cfgConvocatoria_timeText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Hora sugerida</label>
-              <input type="text" id="cfgConvocatoria_timeText" name="cfgConvocatoria_timeText" placeholder="Ej: 18:30 horas" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgConvocatoria_eventTime" class="block text-xs font-bold text-slate-700 uppercase mb-1">Hora de inicio</label>
+              <input type="time" id="cfgConvocatoria_eventTime" name="cfgConvocatoria_eventTime" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+            </div>
+            <div>
+              <label for="cfgConvocatoria_durationHours" class="block text-xs font-bold text-slate-700 uppercase mb-1">Duración (calendario)</label>
+              <select id="cfgConvocatoria_durationHours" name="cfgConvocatoria_durationHours" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+                <option value="1">1 hora</option>
+                <option value="1.5">1 hora y 30 min</option>
+                <option value="2">2 horas (Estándar)</option>
+                <option value="3">3 horas</option>
+                <option value="4">4 horas</option>
+              </select>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -603,13 +613,17 @@
             </div>
           </div>
           <div>
-            <label for="cfgConvocatoria_speakersText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Intervienen (opcional, una persona por línea)</label>
-            <textarea id="cfgConvocatoria_speakersText" name="cfgConvocatoria_speakersText" rows="2" placeholder="Puedes dejarlo vacío o escribir ponentes habituales..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></textarea>
+            <label for="cfgConvocatoria_speakersText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Intervienen (Formato: Nombre Apellidos - Cargo, una persona por línea)</label>
+            <textarea id="cfgConvocatoria_speakersText" name="cfgConvocatoria_speakersText" rows="2" placeholder="Ej: Ángela Hernández - Secretaria General de la Comarca Sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></textarea>
           </div>
-          <div>
+          <div class="flex flex-wrap items-center gap-5 pt-1">
             <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
               <input type="checkbox" id="cfgConvocatoria_linkMaps" name="cfgConvocatoria_linkMaps" class="rounded text-[#CC0000]">
-              <span>Incrustar automáticamente enlace a Google Maps en la dirección</span>
+              <span>Enlace a Google Maps en dirección</span>
+            </label>
+            <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-semibold">
+              <input type="checkbox" id="cfgConvocatoria_showCalendarBtn" name="cfgConvocatoria_showCalendarBtn" class="rounded text-[#CC0000]">
+              <span>Mostrar botones «Añadir al calendario» (Google, iPhone/iOS, Outlook)</span>
             </label>
           </div>
         </div>
@@ -903,6 +917,15 @@
       updatePreviewOnly();
     }
 
+    function getDefaultTomorrowDateISO() {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return yyyy + '-' + mm + '-' + dd;
+    }
+
     // CONFIGURACIÓN PREDETERMINADA
     const DEFAULT_CONFIG = {
       general: {
@@ -933,12 +956,14 @@
       convocatoria: {
         theme: 'red',
         title: 'Asamblea de delegados y delegadas',
-        dateText: '29 de septiembre',
-        timeText: '18:30 horas',
+        eventDate: getDefaultTomorrowDateISO(),
+        eventTime: '18:30',
+        durationHours: '2',
         placeText: 'Sede de CCOO en Getafe',
         addressText: 'C/ San José de Calasanz, 22, Getafe',
         speakersText: 'Ángela Hernández - Secretaria General de la Comarca Sur',
-        linkMaps: true
+        linkMaps: true,
+        showCalendarBtn: true
       },
       callout: {
         theme: 'red',
@@ -976,9 +1001,7 @@
     let userSettings = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     let blocksState = [];
     let cloudDrafts = [];
-
-    // ESTADO DE DRAG & DROP
-    let dragPayload = null; // { mode: 'reorder' | 'insert', fromIndex?: number, blockType?: string }
+    let dragPayload = null;
 
     function generateId() {
       return 'blk_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
@@ -1027,6 +1050,146 @@
       return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(clean);
     }
 
+    // FORMATEO DE PONENTES: Nombre y apellidos en negrita + cargo en cursiva con sangría en línea inferior
+    function formatSpeakerItemHtml(rawLine, isLast) {
+      const cleanLine = String(rawLine || '').replace(/^[\s•·\-*]+/, '').trim();
+      if (!cleanLine) return '';
+
+      // Detecta separador ' - ', ' – ', ' — ', ' | ' o ':'
+      let namePart = cleanLine;
+      let rolePart = '';
+
+      const dashMatch = cleanLine.match(/^(.+?)\s+[-–—|]\s+(.+)$/);
+      if (dashMatch) {
+        namePart = dashMatch[1].trim();
+        rolePart = dashMatch[2].trim();
+      } else {
+        const colonIdx = cleanLine.indexOf(':');
+        if (colonIdx > 0 && colonIdx < cleanLine.length - 1) {
+          namePart = cleanLine.slice(0, colonIdx).trim();
+          rolePart = cleanLine.slice(colonIdx + 1).trim();
+        } else {
+          const simpleDashIdx = cleanLine.indexOf('-');
+          if (simpleDashIdx > 0 && simpleDashIdx < cleanLine.length - 1) {
+            namePart = cleanLine.slice(0, simpleDashIdx).trim();
+            rolePart = cleanLine.slice(simpleDashIdx + 1).trim();
+          }
+        }
+      }
+
+      const bottomMargin = isLast ? '0' : '8px';
+      if (rolePart) {
+        return '<div style="margin: 0 0 ' + bottomMargin + ' 0;">' +
+          '<strong style="color: #111111; font-weight: bold;">' + escapeHtml(namePart) + '</strong><br>' +
+          '<div style="padding-left: 16px; color: #444444; font-style: italic; font-size: 13px; line-height: 18px; margin-top: 1px;"><em>' + escapeHtml(rolePart) + '</em></div>' +
+          '</div>';
+      } else {
+        return '<div style="margin: 0 0 ' + bottomMargin + ' 0;">' +
+          '<strong style="color: #111111; font-weight: bold;">' + escapeHtml(namePart) + '</strong>' +
+          '</div>';
+      }
+    }
+
+    // FUNCIONES DE FORMATEO DE FECHA, HORA Y ENLACES DE CALENDARIO
+    const SPANISH_MONTHS = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    const SPANISH_WEEKDAYS = [
+      'domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'
+    ];
+
+    function formatSpanishReadableDate(isoDateStr) {
+      if (!isoDateStr || !/^\d{4}-\d{2}-\d{2}$/.test(isoDateStr)) return '';
+      const parts = isoDateStr.split('-');
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const dateObj = new Date(y, m, d);
+      if (isNaN(dateObj.getTime())) return isoDateStr;
+      const weekday = SPANISH_WEEKDAYS[dateObj.getDay()];
+      const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+      return weekdayCap + ', ' + d + ' de ' + SPANISH_MONTHS[m] + ' de ' + y;
+    }
+
+    function formatSpanishReadableTime(timeStr) {
+      if (!timeStr || !/^\d{2}:\d{2}/.test(timeStr)) return '';
+      return timeStr.slice(0, 5) + ' horas';
+    }
+
+    function buildCalendarUrlsForConvocatoria(blk) {
+      const isoDate = (blk.eventDate || '').trim();
+      const isoTime = (blk.eventTime || '18:30').trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return null;
+
+      const dParts = isoDate.split('-');
+      const tParts = (/^\d{2}:\d{2}/.test(isoTime) ? isoTime : '18:30').split(':');
+
+      const year = parseInt(dParts[0], 10);
+      const month = parseInt(dParts[1], 10) - 1;
+      const day = parseInt(dParts[2], 10);
+      const hour = parseInt(tParts[0], 10);
+      const minute = parseInt(tParts[1], 10);
+
+      const durationHours = parseFloat(blk.durationHours || '2') || 2;
+      const startLocal = new Date(year, month, day, hour, minute, 0);
+      const endLocal = new Date(startLocal.getTime() + durationHours * 3600 * 1000);
+
+      function toCompactLocalTimestamp(dt) {
+        const yy = dt.getFullYear();
+        const mm = String(dt.getMonth() + 1).padStart(2, '0');
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const hh = String(dt.getHours()).padStart(2, '0');
+        const mi = String(dt.getMinutes()).padStart(2, '0');
+        return yy + mm + dd + 'T' + hh + mi + '00';
+      }
+
+      function toIsoLocalString(dt) {
+        const yy = dt.getFullYear();
+        const mm = String(dt.getMonth() + 1).padStart(2, '0');
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const hh = String(dt.getHours()).padStart(2, '0');
+        const mi = String(dt.getMinutes()).padStart(2, '0');
+        return yy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':00';
+      }
+
+      const startCompact = toCompactLocalTimestamp(startLocal);
+      const endCompact = toCompactLocalTimestamp(endLocal);
+
+      const title = (blk.title || 'Convocatoria CCOO Unión Comarcal Sur').trim();
+      const locationParts = [blk.placeText, blk.addressText].map(s => (s || '').trim()).filter(Boolean);
+      const locationStr = locationParts.join(' - ');
+
+      let detailsStr = 'Convocatoria organizada por la Unión Comarcal Sur de CCOO de Madrid.';
+      if (blk.speakersText && blk.speakersText.trim()) {
+        detailsStr += '\n\nIntervienen:\n' + blk.speakersText.trim();
+      }
+
+      const gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+        '&text=' + encodeURIComponent(title) +
+        '&dates=' + encodeURIComponent(startCompact + '/' + endCompact) +
+        '&ctz=Europe/Madrid' +
+        (locationStr ? '&location=' + encodeURIComponent(locationStr) : '') +
+        '&details=' + encodeURIComponent(detailsStr);
+
+      const icsUrl = GOOGLE_SCRIPT_WEBAPP_URL +
+        '?action=ics' +
+        '&title=' + encodeURIComponent(title) +
+        '&start=' + encodeURIComponent(startCompact) +
+        '&end=' + encodeURIComponent(endCompact) +
+        '&loc=' + encodeURIComponent(locationStr) +
+        '&desc=' + encodeURIComponent(detailsStr);
+
+      const outlookUrl = 'https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent' +
+        '&subject=' + encodeURIComponent(title) +
+        '&startdt=' + encodeURIComponent(toIsoLocalString(startLocal)) +
+        '&enddt=' + encodeURIComponent(toIsoLocalString(endLocal)) +
+        (locationStr ? '&location=' + encodeURIComponent(locationStr) : '') +
+        '&body=' + encodeURIComponent(detailsStr);
+
+      return { gcalUrl: gcalUrl, icsUrl: icsUrl, outlookUrl: outlookUrl };
+    }
+
     function buildEdesSrcString(rawEdesInput) {
       const clean = String(rawEdesInput || '').trim();
       if (!clean) return '';
@@ -1041,7 +1204,6 @@
       return pattern.indexOf('{ID}') !== -1 ? pattern.replace('{ID}', filePart) : (pattern + filePart);
     }
 
-    // Mostrar u ocultar zona de papelera al arrastrar un bloque existente
     function toggleTrashZoneVisibility(show) {
       const trashZone = document.getElementById('timelineTrashZone');
       if (!trashZone) return;
@@ -1193,14 +1355,18 @@
       if (blk.type === 'convocatoria') {
         const theme = blk.theme || 'red';
         const title = escapeHtml((blk.title || '').trim());
-        const dateText = escapeHtml((blk.dateText || '').trim());
-        const timeText = escapeHtml((blk.timeText || '').trim());
+        
+        const readableDate = blk.eventDate ? formatSpanishReadableDate(blk.eventDate) : (blk.dateText || '');
+        const readableTime = blk.eventTime ? formatSpanishReadableTime(blk.eventTime) : (blk.timeText || '');
+        const dateText = escapeHtml(readableDate);
+        const timeText = escapeHtml(readableTime);
+
         const placeText = escapeHtml((blk.placeText || '').trim());
         const rawAddress = (blk.addressText || '').trim();
         const addressText = escapeHtml(rawAddress);
         const useMaps = blk.linkMaps !== false;
+        const showCal = blk.showCalendarBtn !== false;
         
-        // Procesar intervinientes (uno o varios por salto de línea, o vacío)
         const rawSpeakers = (blk.speakersText || '').trim();
         const speakerLines = rawSpeakers
           .split('\n')
@@ -1215,31 +1381,46 @@
 
         const detailRows = [];
         if (dateText) {
-          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Fecha:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222; font-weight: bold;">' + dateText + '</td></tr>');
+          detailRows.push('<tr><td valign="top" width="90" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Fecha:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222; font-weight: bold;">' + dateText + '</td></tr>');
         }
         if (timeText) {
-          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Hora:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222; font-weight: bold;">' + timeText + '</td></tr>');
+          detailRows.push('<tr><td valign="top" width="90" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Hora:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222; font-weight: bold;">' + timeText + '</td></tr>');
         }
         if (placeText) {
-          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Lugar:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222;"><strong>' + placeText + '</strong></td></tr>');
+          detailRows.push('<tr><td valign="top" width="90" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Lugar:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222;"><strong>' + placeText + '</strong></td></tr>');
         }
         if (addressText) {
-          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Dirección:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222;">' + addressHtml + '</td></tr>');
+          detailRows.push('<tr><td valign="top" width="90" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Dirección:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222;">' + addressHtml + '</td></tr>');
         }
         if (speakerLines.length > 0) {
           const speakerLabel = speakerLines.length === 1 ? 'Interviene:' : 'Intervienen:';
-          const formattedSpeakers = speakerLines.length === 1
-            ? escapeHtml(speakerLines[0])
-            : speakerLines.map(sp => '&bull; ' + escapeHtml(sp)).join('<br>');
-          detailRows.push('<tr><td valign="top" width="95" style="padding: 8px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap; border-top: 1px solid #f1dada;">' + speakerLabel + '</td><td valign="top" style="padding: 8px 0 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 20px; color: #222222; border-top: 1px solid #f1dada;">' + formattedSpeakers + '</td></tr>');
+          const formattedSpeakers = speakerLines
+            .map((sp, i) => formatSpeakerItemHtml(sp, i === speakerLines.length - 1))
+            .join('');
+          detailRows.push('<tr><td valign="top" width="90" style="padding: 8px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap; border-top: 1px solid #f1dada;">' + speakerLabel + '</td><td valign="top" style="padding: 8px 0 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 20px; color: #222222; border-top: 1px solid #f1dada;">' + formattedSpeakers + '</td></tr>');
+        }
+
+        let calendarHtml = '';
+        if (showCal && blk.eventDate) {
+          const calLinks = buildCalendarUrlsForConvocatoria(blk);
+          if (calLinks) {
+            calendarHtml = '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5c5c5;">' +
+              '<tr><td align="left" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 20px; color: #444444;">' +
+              '<strong style="color: #222222; display: inline-block; margin-right: 8px; margin-bottom: 4px;">Añadir al calendario:</strong>' +
+              '<a href="' + escapeHtml(calLinks.gcalUrl) + '" target="_blank" style="display: inline-block; background-color: #CC0000; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 11.5px; padding: 4px 10px; border-radius: 4px; margin-right: 6px; margin-bottom: 4px;">+ Google Calendar</a>' +
+              '<a href="' + escapeHtml(calLinks.icsUrl) + '" target="_blank" style="display: inline-block; background-color: #ffffff; color: #CC0000; border: 1px solid #CC0000; text-decoration: none; font-weight: bold; font-size: 11.5px; padding: 3px 10px; border-radius: 4px; margin-right: 6px; margin-bottom: 4px;">+ iPhone / Otros (.ics)</a>' +
+              '<a href="' + escapeHtml(calLinks.outlookUrl) + '" target="_blank" style="display: inline-block; background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; text-decoration: none; font-weight: bold; font-size: 11.5px; padding: 3px 10px; border-radius: 4px; margin-bottom: 4px;">+ Outlook</a>' +
+              '</td></tr></table>';
+          }
         }
 
         if (theme === 'clean') {
           return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #fdf5f5; border: 1px solid #f5d0d0; border-left: 5px solid #CC0000; border-radius: 4px; margin: 18px 0 22px 0;">' +
-            '<tr><td style="padding: 18px 20px; font-family: Arial, Helvetica, sans-serif;">' +
+            '<tr><td style="padding: 18px 18px; font-family: Arial, Helvetica, sans-serif;">' +
             '<p style="margin: 0 0 4px 0; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #CC0000;">Convocatoria</p>' +
             (title ? '<h2 style="margin: 0 0 14px 0; font-size: 20px; line-height: 25px; color: #111111; font-weight: bold; font-family: Arial, Helvetica, sans-serif;">' + title + '</h2>' : '') +
             '<table width="100%" border="0" cellspacing="0" cellpadding="0">' + detailRows.join('') + '</table>' +
+            calendarHtml +
             '</td></tr></table>';
         }
 
@@ -1254,6 +1435,7 @@
           '</td></tr>' +
           '<tr><td style="padding: 16px 18px; font-family: Arial, Helvetica, sans-serif;">' +
           '<table width="100%" border="0" cellspacing="0" cellpadding="0">' + detailRows.join('') + '</table>' +
+          calendarHtml +
           '</td></tr></table>';
       }
 
@@ -1385,7 +1567,7 @@
     }
 
     function saveLocalWorkingState() {
-      try { localStorage.setItem('ccoo_working_blocks_v6', JSON.stringify(blocksState)); } catch (e) {}
+      try { localStorage.setItem('ccoo_working_blocks_v7', JSON.stringify(blocksState)); } catch (e) {}
     }
 
     // SINCRONIZACIÓN GOOGLE DRIVE / LOCAL
@@ -1417,6 +1599,12 @@
           userSettings = Object.assign({}, DEFAULT_CONFIG, data.settings);
           if (!userSettings.convocatoria) {
             userSettings.convocatoria = JSON.parse(JSON.stringify(DEFAULT_CONFIG.convocatoria));
+          }
+          if (!userSettings.convocatoria.eventDate) {
+            userSettings.convocatoria.eventDate = getDefaultTomorrowDateISO();
+          }
+          if (!userSettings.convocatoria.eventTime) {
+            userSettings.convocatoria.eventTime = '18:30';
           }
           if (!userSettings.general.edesPattern || userSettings.general.edesPattern === '[EDES:{ID}]') {
             userSettings.general.edesPattern = 'edes.php?R://co/cotplimg/{ID}';
@@ -1665,6 +1853,11 @@
 
       if (blk.type === 'convocatoria') {
         const theme = blk.theme || 'red';
+        const dur = String(blk.durationHours || '2');
+        const dateVal = blk.eventDate || getDefaultTomorrowDateISO();
+        const timeVal = blk.eventTime || '18:30';
+        const readablePreview = formatSpanishReadableDate(dateVal) + ' a las ' + formatSpanishReadableTime(timeVal);
+
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
           '<div class="sm:col-span-2">' +
@@ -1677,13 +1870,24 @@
           '<option value="dark" ' + (theme === 'dark' ? 'selected' : '') + '>Cabecera Oscura</option>' +
           '<option value="clean" ' + (theme === 'clean' ? 'selected' : '') + '>Borde Lateral Rojo</option>' +
           '</select></div></div>' +
-          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div class="bg-red-50/50 p-3 rounded-lg border border-red-100 space-y-2">' +
+          '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
           '<div>' +
-          '<label for="' + pfx + 'dateText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">2. Fecha</label>' +
-          '<input type="text" id="' + pfx + 'dateText" name="dateText" data-field="dateText" value="' + escapeHtml(blk.dateText) + '" placeholder="Ej: 29 de septiembre" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<label for="' + pfx + 'eventDate" class="block text-[11px] font-bold text-slate-700 uppercase mb-1"><i class="fa-regular fa-calendar text-[#CC0000] mr-1"></i>2. Fecha del acto</label>' +
+          '<input type="date" id="' + pfx + 'eventDate" name="eventDate" data-field="eventDate" value="' + escapeHtml(dateVal) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]"></div>' +
           '<div>' +
-          '<label for="' + pfx + 'timeText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">3. Hora</label>' +
-          '<input type="text" id="' + pfx + 'timeText" name="timeText" data-field="timeText" value="' + escapeHtml(blk.timeText) + '" placeholder="Ej: 18:30 horas" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<label for="' + pfx + 'eventTime" class="block text-[11px] font-bold text-slate-700 uppercase mb-1"><i class="fa-regular fa-clock text-[#CC0000] mr-1"></i>3. Hora de inicio</label>' +
+          '<input type="time" id="' + pfx + 'eventTime" name="eventTime" data-field="eventTime" value="' + escapeHtml(timeVal) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'durationHours" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Duración (calendario)</label>' +
+          '<select id="' + pfx + 'durationHours" name="durationHours" data-field="durationHours" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<option value="1" ' + (dur === '1' ? 'selected' : '') + '>1 hora</option>' +
+          '<option value="1.5" ' + (dur === '1.5' ? 'selected' : '') + '>1 hora y 30 min</option>' +
+          '<option value="2" ' + (dur === '2' ? 'selected' : '') + '>2 horas</option>' +
+          '<option value="3" ' + (dur === '3' ? 'selected' : '') + '>3 horas</option>' +
+          '<option value="4" ' + (dur === '4' ? 'selected' : '') + '>4 horas</option>' +
+          '</select></div></div>' +
+          '<p class="text-[11px] text-slate-600"><i class="fa-solid fa-wand-magic-sparkles text-[#CC0000] mr-1"></i>Texto generado en el correo: <strong>' + escapeHtml(readablePreview) + '</strong></p>' +
           '</div>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
           '<div>' +
@@ -1695,14 +1899,17 @@
           '</div>' +
           '<div>' +
           '<div class="flex items-center justify-between mb-1">' +
-          '<label for="' + pfx + 'speakersText" class="block text-[11px] font-bold text-slate-600 uppercase">6. Intervienen (opcional · una persona por línea)</label>' +
-          '<span class="text-[10px] text-slate-400">Déjalo vacío si no procede</span></div>' +
+          '<label for="' + pfx + 'speakersText" class="block text-[11px] font-bold text-slate-600 uppercase">6. Intervienen (Nombre Apellidos - Responsabilidad, una persona por línea)</label>' +
+          '<span class="text-[10px] text-slate-400">Nombre en negrita y cargo en cursiva debajo</span></div>' +
           '<textarea id="' + pfx + 'speakersText" name="speakersText" rows="2" data-field="speakersText" placeholder="Ej: Ángela Hernández - Secretaria General de la Comarca Sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">' + escapeHtml(blk.speakersText) + '</textarea>' +
           '</div>' +
-          '<div class="pt-1">' +
+          '<div class="flex flex-wrap items-center gap-5 pt-1">' +
           '<label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">' +
           '<input type="checkbox" name="linkMaps" data-field-bool="linkMaps" ' + (blk.linkMaps !== false ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
-          '<span>Incluir enlace interactivo a Google Maps en la dirección</span></label>' +
+          '<span>Enlace a Google Maps en dirección</span></label>' +
+          '<label class="inline-flex items-center gap-2 text-xs text-slate-800 font-semibold cursor-pointer">' +
+          '<input type="checkbox" name="showCalendarBtn" data-field-bool="showCalendarBtn" ' + (blk.showCalendarBtn !== false ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span>Mostrar botones «Añadir al calendario» (Google, iPhone/iOS, Outlook)</span></label>' +
           '</div></div>';
       }
 
@@ -1818,7 +2025,10 @@
       if (blk.type === 'header') return blk.title || blk.kicker || '';
       if (blk.type === 'image') return (blk.method === 'edes' ? ('EDES: ' + (blk.edesId || 'sin ID')) : (blk.imageUrl || 'sin URL'));
       if (blk.type === 'richtext') return (blk.html || '').replace(/<[^>]+>/g, ' ').trim().slice(0, 48);
-      if (blk.type === 'convocatoria') return (blk.title || '') + (blk.dateText ? ' · ' + blk.dateText : '');
+      if (blk.type === 'convocatoria') {
+        const d = blk.eventDate ? formatSpanishReadableDate(blk.eventDate) : (blk.dateText || '');
+        return (blk.title || '') + (d ? ' · ' + d : '');
+      }
       if (blk.type === 'callout') return blk.title || blk.text || '';
       if (blk.type === 'button') return blk.btnText || '';
       if (blk.type === 'closing') return blk.closingLine || '';
@@ -1987,8 +2197,13 @@
 
         card.querySelectorAll('[data-field]').forEach(input => {
           input.addEventListener('input', () => {
-            blk[input.getAttribute('data-field')] = input.value;
-            updatePreviewOnly();
+            const fName = input.getAttribute('data-field');
+            blk[fName] = input.value;
+            if (fName === 'eventDate' || fName === 'eventTime') {
+              renderAllBlocksUI();
+            } else {
+              updatePreviewOnly();
+            }
           });
         });
 
@@ -2155,12 +2370,14 @@
       // Convocatoria
       document.getElementById('cfgConvocatoria_title').value = userSettings.convocatoria.title || '';
       document.getElementById('cfgConvocatoria_theme').value = userSettings.convocatoria.theme || 'red';
-      document.getElementById('cfgConvocatoria_dateText').value = userSettings.convocatoria.dateText || '';
-      document.getElementById('cfgConvocatoria_timeText').value = userSettings.convocatoria.timeText || '';
+      document.getElementById('cfgConvocatoria_eventDate').value = userSettings.convocatoria.eventDate || getDefaultTomorrowDateISO();
+      document.getElementById('cfgConvocatoria_eventTime').value = userSettings.convocatoria.eventTime || '18:30';
+      document.getElementById('cfgConvocatoria_durationHours').value = String(userSettings.convocatoria.durationHours || '2');
       document.getElementById('cfgConvocatoria_placeText').value = userSettings.convocatoria.placeText || '';
       document.getElementById('cfgConvocatoria_addressText').value = userSettings.convocatoria.addressText || '';
       document.getElementById('cfgConvocatoria_speakersText').value = userSettings.convocatoria.speakersText || '';
       document.getElementById('cfgConvocatoria_linkMaps').checked = userSettings.convocatoria.linkMaps !== false;
+      document.getElementById('cfgConvocatoria_showCalendarBtn').checked = userSettings.convocatoria.showCalendarBtn !== false;
       // Callout
       document.getElementById('cfgCallout_title').value = userSettings.callout.title || '';
       document.getElementById('cfgCallout_theme').value = userSettings.callout.theme || 'red';
@@ -2213,12 +2430,14 @@
       userSettings.richtext.initialHtml = document.getElementById('cfgRichText_initialHtml').value;
       userSettings.convocatoria.title = document.getElementById('cfgConvocatoria_title').value;
       userSettings.convocatoria.theme = document.getElementById('cfgConvocatoria_theme').value;
-      userSettings.convocatoria.dateText = document.getElementById('cfgConvocatoria_dateText').value;
-      userSettings.convocatoria.timeText = document.getElementById('cfgConvocatoria_timeText').value;
+      userSettings.convocatoria.eventDate = document.getElementById('cfgConvocatoria_eventDate').value;
+      userSettings.convocatoria.eventTime = document.getElementById('cfgConvocatoria_eventTime').value;
+      userSettings.convocatoria.durationHours = document.getElementById('cfgConvocatoria_durationHours').value;
       userSettings.convocatoria.placeText = document.getElementById('cfgConvocatoria_placeText').value;
       userSettings.convocatoria.addressText = document.getElementById('cfgConvocatoria_addressText').value;
       userSettings.convocatoria.speakersText = document.getElementById('cfgConvocatoria_speakersText').value;
       userSettings.convocatoria.linkMaps = document.getElementById('cfgConvocatoria_linkMaps').checked;
+      userSettings.convocatoria.showCalendarBtn = document.getElementById('cfgConvocatoria_showCalendarBtn').checked;
       userSettings.callout.title = document.getElementById('cfgCallout_title').value;
       userSettings.callout.theme = document.getElementById('cfgCallout_theme').value;
       userSettings.callout.text = document.getElementById('cfgCallout_text').value;
@@ -2280,6 +2499,8 @@
         if (blk.type === 'convocatoria') {
           blk.theme = userSettings.convocatoria.theme;
           blk.linkMaps = userSettings.convocatoria.linkMaps;
+          blk.showCalendarBtn = userSettings.convocatoria.showCalendarBtn;
+          blk.durationHours = userSettings.convocatoria.durationHours;
         }
         if (blk.type === 'button') {
           blk.style = userSettings.button.style;
@@ -2475,7 +2696,7 @@
     window.addEventListener('DOMContentLoaded', async () => {
       initTrashZoneEvents();
       try {
-        const saved = localStorage.getItem('ccoo_working_blocks_v6');
+        const saved = localStorage.getItem('ccoo_working_blocks_v7');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
