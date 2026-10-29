@@ -57,47 +57,85 @@
     .block-card.drag-over {
       border-top: 3px solid #CC0000;
     }
-    /* Marco para previsualización realista en móvil sin desbordamiento */
-    .mobile-device-frame {
-      width: 395px !important;
-      max-width: 100% !important;
-      background-color: #1e293b;
-      padding: 14px 10px 20px 10px;
-      border-radius: 36px;
-      box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.35), inset 0 0 0 2px #334155;
+    /* Chasis Smartphone realista y hermético sin desbordamiento inferior */
+    .mobile-phone-shell {
+      width: 385px;
+      max-width: 100%;
+      height: 720px;
+      max-height: 74vh;
+      background: #0f172a;
+      border-radius: 44px;
+      padding: 10px;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45), inset 0 0 0 2.5px #334155;
       margin: 0 auto;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
-    .mobile-device-frame #liveEmailRender {
-      border-radius: 20px;
-      overflow-x: hidden !important;
+    .mobile-phone-screen {
+      width: 100%;
+      height: 100%;
       background: #ffffff;
-      width: 100% !important;
-      box-sizing: border-box;
+      border-radius: 34px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
     }
-    .mobile-device-frame #liveEmailRender .ccoo-outer-pad {
+    .mobile-phone-statusbar {
+      background: #ffffff;
+      padding: 8px 16px 4px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      flex-shrink: 0;
+      z-index: 20;
+      user-select: none;
+    }
+    .mobile-phone-scrollarea {
+      flex: 1 1 0%;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      width: 100%;
+      background: #f4f4f4;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .mobile-phone-homebar {
+      background: #ffffff;
+      padding: 6px 0 8px 0;
+      display: flex;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 20;
+      border-top: 1px solid #f1f5f9;
+      user-select: none;
+    }
+    /* Ajustes específicos en la vista móvil para prevenir desbordamientos */
+    .mobile-phone-scrollarea .ccoo-outer-pad {
       padding: 0 !important;
     }
-    .mobile-device-frame #liveEmailRender .ccoo-inner-pad {
-      padding: 16px 10px !important;
+    .mobile-phone-scrollarea .ccoo-inner-pad {
+      padding: 14px 10px !important;
     }
-    .mobile-device-frame #liveEmailRender .ccoo-footer-logo-img {
-      max-width: 125px !important;
+    .mobile-phone-scrollarea .ccoo-footer-logo-img {
+      max-width: 115px !important;
+      width: 115px !important;
       height: auto !important;
     }
-    .mobile-device-frame #liveEmailRender .ccoo-footer-contact-info {
-      font-size: 11.5px !important;
-      line-height: 16px !important;
+    .mobile-phone-scrollarea .ccoo-footer-contact-info {
+      font-size: 11px !important;
+      line-height: 15px !important;
     }
-    .mobile-device-frame #liveEmailRender .ccoo-btn-link {
+    .mobile-phone-scrollarea .ccoo-btn-table {
+      width: 100% !important;
+    }
+    .mobile-phone-scrollarea .ccoo-btn-link {
       display: block !important;
       width: 100% !important;
       box-sizing: border-box !important;
       padding: 12px 14px !important;
       text-align: center !important;
-    }
-    .mobile-device-frame #liveEmailRender .ccoo-btn-table {
-      width: 100% !important;
     }
     ::-webkit-scrollbar {
       width: 8px;
@@ -257,224 +295,433 @@
           </button>
         </div>
 
-        <div id="previewContainer" class="p-3 sm:p-5 bg-[#e2e8f0] overflow-x-hidden flex justify-center min-h-[580px] max-h-[78vh] overflow-y-auto">
-          <div id="previewViewport" class="w-full transition-all duration-200">
-            <!-- Barra superior decorativa móvil -->
-            <div id="mobilePhoneNotch" class="hidden flex-col items-center justify-center pb-2.5 select-none">
-              <div class="w-16 h-1.5 rounded-full bg-slate-600 mb-1.5"></div>
-              <div class="w-full px-3 flex items-center justify-between text-[10px] text-slate-300 font-semibold">
-                <span>9:41</span>
-                <span><i class="fa-solid fa-envelope text-[#CC0000] mr-1"></i>Vista Móvil Adaptable</span>
-                <span><i class="fa-solid fa-signal mr-1"></i><i class="fa-solid fa-wifi mr-1"></i><i class="fa-solid fa-battery-full"></i></span>
+        <div id="previewContainer" class="p-3 sm:p-5 bg-[#e2e8f0] overflow-x-hidden flex justify-center items-start min-h-[580px] max-h-[78vh] overflow-y-auto">
+          <!-- Vista Ordenador -->
+          <div id="desktopPreviewWrapper" class="w-full transition-all duration-200">
+            <div id="liveEmailRenderDesktop" class="shadow-md rounded overflow-hidden w-full bg-white"></div>
+          </div>
+
+          <!-- Vista Smartphone hermético (sin desbordamiento) -->
+          <div id="mobilePhoneChassis" class="hidden mobile-phone-shell">
+            <div class="mobile-phone-screen">
+              <!-- Barra de estado fija superior -->
+              <div class="mobile-phone-statusbar">
+                <div class="flex items-center justify-between text-[11px] font-semibold text-slate-800">
+                  <span class="font-bold tracking-tight">9:41</span>
+                  <!-- Notch / Isla dinámica -->
+                  <div class="w-24 h-4 bg-slate-950 rounded-full flex items-center justify-end pr-2.5">
+                    <div class="w-2 h-2 rounded-full bg-slate-800 border border-slate-700"></div>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-slate-700 text-[10px]">
+                    <i class="fa-solid fa-signal"></i>
+                    <i class="fa-solid fa-wifi"></i>
+                    <i class="fa-solid fa-battery-full text-xs text-slate-900"></i>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div id="liveEmailRender" class="shadow-md rounded overflow-hidden w-full"></div>
-            <!-- Barra inferior decorativa móvil -->
-            <div id="mobilePhoneHomeBar" class="hidden pt-3 flex justify-center select-none">
-              <div class="w-28 h-1 rounded-full bg-slate-500"></div>
+
+              <!-- Área de scroll independiente del móvil -->
+              <div id="mobileScrollArea" class="mobile-phone-scrollarea">
+                <div id="liveEmailRenderMobile" class="w-full"></div>
+              </div>
+
+              <!-- Barra Home fija inferior -->
+              <div class="mobile-phone-homebar">
+                <div class="w-28 h-1 rounded-full bg-slate-400/80"></div>
+              </div>
             </div>
           </div>
         </div>
 
         <div id="codeContainer" class="hidden p-4 bg-slate-900 text-slate-100 flex-1 flex flex-col min-h-[580px] max-h-[78vh]">
-          <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-700 text-xs text-slate-400">
-            <span>HTML Tablas Responsivas 100% Adaptables (Ordenador y Móvil · Compatible EDES CCOO)</span>
-            <button type="button" id="btnCopyFromCodeTab" class="bg-[#CC0000] hover:bg-red-700 text-white font-semibold px-3 py-1 rounded transition">
-              <i class="fa-regular fa-copy mr-1"></i>Copiar todo
-            </button>
-          </div>
-          <textarea id="rawHtmlOutput" readonly class="w-full flex-1 bg-slate-950 text-emerald-400 font-mono text-xs p-3 rounded border border-slate-800 focus:outline-none resize-none"></textarea>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL: CONFIGURACIÓN PREDETERMINADA -->
+  <!-- MODAL: CONFIGURACIÓN PREDETERMINADA AVANZADA -->
   <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-4xl w-full shadow-xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
       <div class="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
         <div>
           <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
             <i class="fa-solid fa-sliders text-[#CC0000]"></i> Configuración de Parámetros Predeterminados
           </h3>
-          <p class="text-xs text-slate-500">Personaliza el ancho del correo y los valores por defecto al añadir bloques (EDES, formato de texto, firma, pie institucional y redes sociales).</p>
+          <p class="text-xs text-slate-500">Configura las opciones por defecto para cada uno de los bloques y el correo en general.</p>
         </div>
         <button type="button" id="btnCloseSettingsModal" class="text-slate-400 hover:text-slate-600 text-lg">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="p-5 space-y-6 overflow-y-auto flex-1 text-sm">
-        <!-- 1. Formato de Texto, Ancho del Correo y Titular -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-2">
-            <i class="fa-solid fa-font text-[#CC0000]"></i> 1. Ancho del Correo, Formato de Texto Rico y Titular
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Ancho máximo en Ordenador</label>
-              <select id="cfgEmailMaxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white font-semibold focus:outline-none focus:border-[#CC0000]">
-                <option value="100%">100% Fluido (Todo el ancho)</option>
-                <option value="900px">Amplio (Hasta 900px)</option>
-                <option value="800px">Estándar Amplio (Hasta 800px)</option>
-                <option value="700px">Medio (Hasta 700px)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Tamaño fuente texto</label>
-              <select id="cfgTextFontSize" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-                <option value="12px">12px (Compacto)</option>
-                <option value="13px">13px</option>
-                <option value="14px">14px</option>
-                <option value="15px">15px (Estándar CCOO)</option>
-                <option value="16px">16px (Cómodo)</option>
-                <option value="17px">17px</option>
-                <option value="18px">18px (Grande)</option>
-                <option value="19px">19px</option>
-                <option value="20px">20px (Extra grande)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Justificación texto</label>
-              <select id="cfgTextAlign" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-                <option value="left">Izquierda</option>
-                <option value="justify">Justificado</option>
-                <option value="center">Centrado</option>
-                <option value="right">Derecha</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Antetítulo superior (Cabecera)</label>
-              <input type="text" id="cfgHeaderKicker" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Imágenes y Sistema EDES -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-2">
-            <i class="fa-regular fa-image text-[#CC0000]"></i> 2. Bloque de Imágenes y Sistema EDES (Gestor de Envíos CCOO)
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Método por defecto</label>
-              <select id="cfgImageSourceType" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-                <option value="edes">ID de EDES</option>
-                <option value="url">URL Directa</option>
-                <option value="placeholder">Placeholder</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación por defecto</label>
-              <select id="cfgImageAlign" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-                <option value="center">Centrado</option>
-                <option value="left">Izquierda</option>
-                <option value="right">Derecha</option>
-              </select>
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Patrón de ruta EDES (Usa <code class="text-[#CC0000]">{ID}</code> donde va el código)</label>
-              <input type="text" id="cfgEdesUrlPattern" placeholder="Ej: {ID} o https://.../edes.php?id={ID}" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-              <p class="text-[11px] text-slate-500 mt-1">
-                Si dejas <code class="bg-slate-200 px-1 rounded">{ID}</code>, se insertará exactamente lo que escribas en el campo ID de EDES dentro del atributo <code class="bg-slate-200 px-1 rounded">src="..."</code>.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Lema de cierre y Botón CTA -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-2">
-            <i class="fa-solid fa-signature text-[#CC0000]"></i> 3. Lema de Cierre, Firma y Botón CTA
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Lema o despedida</label>
-              <input type="text" id="cfgClosingLine" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Firma en rojo</label>
-              <input type="text" id="cfgSignatureRed" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-[#CC0000] bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto Botón CTA por defecto</label>
-              <input type="text" id="cfgBtnText" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Pie Institucional y Redes Sociales -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 pb-2">
-            <i class="fa-solid fa-id-card text-[#CC0000]"></i> 4. Pie Institucional y Redes Sociales Predeterminadas
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Dirección (Línea 1)</label>
-              <input type="text" id="cfgAddressLine1" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">CP y Municipio (Línea 2)</label>
-              <input type="text" id="cfgAddressLine2" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Teléfono</label>
-              <input type="text" id="cfgPhone" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Email</label>
-              <input type="email" id="cfgEmail" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto "Síguenos en:"</label>
-              <input type="text" id="cfgFollowLabel" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Usuario (@handle)</label>
-              <input type="text" id="cfgSocialHandleText" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold text-[#CC0000] bg-white focus:outline-none focus:border-[#CC0000]">
-            </div>
-          </div>
-
-          <div class="pt-2">
-            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-2">Redes sociales predeterminadas:</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                <input type="checkbox" id="cfgShowX" class="rounded text-[#CC0000]">
-                <span class="text-xs font-bold w-20 shrink-0">X (Twitter):</span>
-                <input type="url" id="cfgXUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
-              </div>
-              <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                <input type="checkbox" id="cfgShowFb" class="rounded text-[#CC0000]">
-                <span class="text-xs font-bold w-20 shrink-0">Facebook:</span>
-                <input type="url" id="cfgFbUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
-              </div>
-              <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                <input type="checkbox" id="cfgShowInsta" class="rounded text-[#CC0000]">
-                <span class="text-xs font-bold w-20 shrink-0">Instagram:</span>
-                <input type="url" id="cfgInstaUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
-              </div>
-              <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                <input type="checkbox" id="cfgShowYt" class="rounded text-[#CC0000]">
-                <span class="text-xs font-bold w-20 shrink-0">YouTube:</span>
-                <input type="url" id="cfgYtUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
-              </div>
-              <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                <input type="checkbox" id="cfgShowTiktok" class="rounded text-[#CC0000]">
-                <span class="text-xs font-bold w-20 shrink-0">TikTok:</span>
-                <input type="url" id="cfgTiktokUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
-              </div>
-              <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
-                <input type="checkbox" id="cfgShowBsky" class="rounded text-[#CC0000]">
-                <span class="text-xs font-bold w-20 shrink-0">Bluesky:</span>
-                <input type="url" id="cfgBskyUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Pestañas de bloques de configuración -->
+      <div class="flex border-b border-slate-200 bg-slate-100/70 px-4 pt-2 gap-1 overflow-x-auto shrink-0 select-none">
+        <button type="button" data-cfg-tab="general" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-bold text-[#CC0000] bg-white shadow-2xs border border-slate-200 transition whitespace-nowrap">
+          <i class="fa-solid fa-gear mr-1"></i>General & EDES
+        </button>
+        <button type="button" data-cfg-tab="header" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-solid fa-heading mr-1"></i>Titular
+        </button>
+        <button type="button" data-cfg-tab="image" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-regular fa-image mr-1"></i>Imagen / Cartel
+        </button>
+        <button type="button" data-cfg-tab="richtext" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-solid fa-align-left mr-1"></i>Texto Rico
+        </button>
+        <button type="button" data-cfg-tab="callout" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-solid fa-quote-left mr-1"></i>Destacado
+        </button>
+        <button type="button" data-cfg-tab="button" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-solid fa-hand-pointer mr-1"></i>Botón CTA
+        </button>
+        <button type="button" data-cfg-tab="closing" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-solid fa-signature mr-1"></i>Lema Cierre
+        </button>
+        <button type="button" data-cfg-tab="footer" class="cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap">
+          <i class="fa-solid fa-id-card mr-1"></i>Pie UC Sur
+        </button>
       </div>
 
+      <!-- Contenido de las pestañas -->
+      <div class="p-5 overflow-y-auto flex-1 text-sm bg-white">
+        
+        <!-- Pestaña 1: General & EDES -->
+        <div id="cfgPane_general" class="cfg-tab-pane space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-desktop text-[#CC0000]"></i> Parámetros generales del correo
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Ancho máximo en Ordenador</label>
+                <select id="cfgEmailMaxWidth" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white font-semibold focus:outline-none focus:border-[#CC0000]">
+                  <option value="900px">Amplio (Hasta 900px)</option>
+                  <option value="800px">Estándar Amplio (Hasta 800px)</option>
+                  <option value="700px">Medio (Hasta 700px)</option>
+                  <option value="600px">Clásico (600px)</option>
+                  <option value="100%">100% Fluido (Sin límite)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Patrón de ruta EDES</label>
+                <input type="text" id="cfgEdesUrlPattern" placeholder="Ej: {ID} o https://..." class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white font-mono focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500">
+              <i class="fa-solid fa-circle-info text-[#CC0000] mr-1"></i>
+              El patrón de EDES sustituye <code class="bg-slate-200 px-1 py-0.5 rounded font-mono text-slate-800">{ID}</code> por el código introducido en cada imagen.
+            </p>
+          </div>
+        </div>
+
+        <!-- Pestaña 2: Titular -->
+        <div id="cfgPane_header" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-heading text-[#CC0000]"></i> Parámetros predeterminados del Titular
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Antetítulo superior predeterminado</label>
+                <input type="text" id="cfgHeaderKicker" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación predeterminada</label>
+                <select id="cfgHeaderAlign" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="left">Izquierda</option>
+                  <option value="center">Centrado</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título principal (H1) predeterminado</label>
+              <input type="text" id="cfgHeaderTitle" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white font-bold focus:outline-none focus:border-[#CC0000]">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: Imagen / Cartel -->
+        <div id="cfgPane_image" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-regular fa-image text-[#CC0000]"></i> Parámetros predeterminados del Bloque de Imagen
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Método de origen</label>
+                <select id="cfgImageSourceType" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white font-semibold focus:outline-none focus:border-[#CC0000]">
+                  <option value="edes">ID de EDES (CCOO)</option>
+                  <option value="url">URL Directa</option>
+                  <option value="placeholder">Placeholder</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>
+                <select id="cfgImageAlign" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="center">Centrado</option>
+                  <option value="left">Izquierda</option>
+                  <option value="right">Derecha</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Tamaño máximo</label>
+                <select id="cfgImageMaxWidth" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="100%">Ancho completo (100%)</option>
+                  <option value="500px">Cartel Grande (500px)</option>
+                  <option value="400px">Cartel Mediano (400px)</option>
+                  <option value="300px">Compacto (300px)</option>
+                  <option value="250px">Miniatura (250px)</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">URL de imagen por defecto</label>
+                <input type="url" id="cfgImageDefaultUrl" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">ID de EDES por defecto (opcional)</label>
+                <input type="text" id="cfgImageEdesId" placeholder="Ej: 48291..." class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Dimensiones de Placeholder</label>
+                <select id="cfgImagePlaceholderSize" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="1100x420">Banner (1100x420)</option>
+                  <option value="1100x360">Cabecera (1100x360)</option>
+                  <option value="800x1000">Cartel (800x1000)</option>
+                  <option value="600x600">Cuadrado (600x600)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto de Placeholder</label>
+                <input type="text" id="cfgImagePlaceholderText" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto alternativo (Alt) por defecto</label>
+                <input type="text" id="cfgImageAltText" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace URL al pulsar (opcional)</label>
+                <input type="url" id="cfgImageLinkUrl" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div class="flex-1">
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pie de foto por defecto</label>
+                <input type="text" id="cfgImageCaption" placeholder="Pie de foto..." class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <label class="inline-flex items-center gap-1.5 text-xs text-slate-700 cursor-pointer select-none mt-4">
+                <input type="checkbox" id="cfgImageRounded" class="rounded text-[#CC0000]">
+                <span>Esquinas redondeadas por defecto</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 4: Texto Rico -->
+        <div id="cfgPane_richtext" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-align-left text-[#CC0000]"></i> Parámetros predeterminados del Bloque de Texto
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Tamaño de fuente</label>
+                <select id="cfgTextFontSize" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="12px">12px (Compacto)</option>
+                  <option value="13px">13px</option>
+                  <option value="14px">14px</option>
+                  <option value="15px">15px (Estándar CCOO)</option>
+                  <option value="16px">16px (Cómodo)</option>
+                  <option value="17px">17px</option>
+                  <option value="18px">18px (Grande)</option>
+                  <option value="19px">19px</option>
+                  <option value="20px">20px (Extra grande)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación / Justificación</label>
+                <select id="cfgTextAlign" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="left">Izquierda</option>
+                  <option value="justify">Justificado</option>
+                  <option value="center">Centrado</option>
+                  <option value="right">Derecha</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto HTML inicial de nuevos bloques</label>
+              <textarea id="cfgTextDefaultHtml" rows="3" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono bg-white focus:outline-none focus:border-[#CC0000]"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 5: Destacado (Callout) -->
+        <div id="cfgPane_callout" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-quote-left text-[#CC0000]"></i> Parámetros predeterminados de Caja Destacada
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título de la caja</label>
+                <input type="text" id="cfgCalloutTitle" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white font-semibold focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Estilo de color</label>
+                <select id="cfgCalloutTheme" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="red">Rojo CCOO</option>
+                  <option value="amber">Ámbar</option>
+                  <option value="gray">Gris</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto del aviso</label>
+              <textarea id="cfgCalloutText" rows="2" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 6: Botón CTA -->
+        <div id="cfgPane_button" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-hand-pointer text-[#CC0000]"></i> Parámetros predeterminados del Botón CTA
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto del botón</label>
+                <input type="text" id="cfgBtnText" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace URL</label>
+                <input type="url" id="cfgBtnUrl" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Color / Estilo</label>
+                <select id="cfgBtnStyle" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="red">Rojo CCOO</option>
+                  <option value="dark">Negro</option>
+                  <option value="outline">Borde rojo</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>
+                <select id="cfgBtnAlign" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+                  <option value="center">Centrado</option>
+                  <option value="left">Izquierda</option>
+                  <option value="right">Derecha</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Nota aclaratoria bajo el botón</label>
+              <textarea id="cfgBtnHelperNote" rows="2" placeholder="Nota aclaratoria..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs bg-white focus:outline-none focus:border-[#CC0000]"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña 7: Lema Cierre -->
+        <div id="cfgPane_closing" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-signature text-[#CC0000]"></i> Parámetros predeterminados del Lema de Cierre
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Lema o despedida</label>
+                <input type="text" id="cfgClosingLine" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Firma en rojo corporativo</label>
+                <input type="text" id="cfgSignatureRed" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-[#CC0000] bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+              <input type="checkbox" id="cfgClosingShowHr" class="rounded text-[#CC0000]">
+              <span>Mostrar línea divisoria encima del lema por defecto</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pestaña 8: Pie UC Sur -->
+        <div id="cfgPane_footer" class="cfg-tab-pane hidden space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-id-card text-[#CC0000]"></i> Datos de contacto y sede institucional
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Dirección (Línea 1)</label>
+                <input type="text" id="cfgAddressLine1" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">CP y Municipio (Línea 2)</label>
+                <input type="text" id="cfgAddressLine2" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Teléfono</label>
+                <input type="text" id="cfgPhone" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Email</label>
+                <input type="email" id="cfgEmail" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto "Síguenos en:"</label>
+                <input type="text" id="cfgFollowLabel" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Usuario (@handle)</label>
+                <input type="text" id="cfgSocialHandleText" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-[#CC0000] bg-white focus:outline-none focus:border-[#CC0000]">
+              </div>
+            </div>
+
+            <div class="border-t border-slate-200 pt-3">
+              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-2">Redes sociales activas por defecto:</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                  <input type="checkbox" id="cfgShowX" class="rounded text-[#CC0000]">
+                  <span class="text-xs font-bold w-20 shrink-0">X (Twitter):</span>
+                  <input type="url" id="cfgXUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                  <input type="checkbox" id="cfgShowFb" class="rounded text-[#CC0000]">
+                  <span class="text-xs font-bold w-20 shrink-0">Facebook:</span>
+                  <input type="url" id="cfgFbUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                  <input type="checkbox" id="cfgShowInsta" class="rounded text-[#CC0000]">
+                  <span class="text-xs font-bold w-20 shrink-0">Instagram:</span>
+                  <input type="url" id="cfgInstaUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                  <input type="checkbox" id="cfgShowYt" class="rounded text-[#CC0000]">
+                  <span class="text-xs font-bold w-20 shrink-0">YouTube:</span>
+                  <input type="url" id="cfgYtUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                  <input type="checkbox" id="cfgShowTiktok" class="rounded text-[#CC0000]">
+                  <span class="text-xs font-bold w-20 shrink-0">TikTok:</span>
+                  <input type="url" id="cfgTiktokUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200">
+                  <input type="checkbox" id="cfgShowBsky" class="rounded text-[#CC0000]">
+                  <span class="text-xs font-bold w-20 shrink-0">Bluesky:</span>
+                  <input type="url" id="cfgBskyUrl" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 text-xs">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pie del modal con acciones -->
       <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
         <button type="button" id="btnResetDefaultSettings" class="text-xs font-semibold text-slate-500 hover:text-red-600 transition flex items-center gap-1">
           <i class="fa-solid fa-rotate-left"></i> Restaurar valores de fábrica
@@ -729,53 +976,53 @@
         console.warn('Error al sincronizar con Google Drive:', err);
         updateCloudSyncBadge('error', 'Fallo conexión Drive');
       }
-    }
-
-    async function loadDataFromGoogleDrive() {
-      if (!GOOGLE_SCRIPT_WEBAPP_URL || GOOGLE_SCRIPT_WEBAPP_URL.includes('TU_ID')) {
-        updateCloudSyncBadge('local', 'Almacenamiento local');
-        return;
-      }
-      updateCloudSyncBadge('syncing', 'Cargando de Drive...');
-      try {
-        const response = await fetch(GOOGLE_SCRIPT_WEBAPP_URL);
-        const cloudData = await response.json();
-        let updated = false;
-
-        if (cloudData && Array.isArray(cloudData.templates) && cloudData.templates.length > 0) {
-          saveDraftsArray(cloudData.templates, false);
-          updated = true;
-        }
-        if (cloudData && cloudData.settings && Object.keys(cloudData.settings).length > 0) {
-          userSettings = { ...FACTORY_DEFAULT_SETTINGS, ...cloudData.settings };
-          saveUserSettings(false);
-          updated = true;
-        }
-
-        updateCloudSyncBadge('synced', 'Sincronizado con Drive');
-        if (updated) {
-          renderAllBlocksUI();
-          showToast('Google Drive conectado', 'Plantillas y configuración cargadas desde tu nube.');
-        }
-      } catch (err) {
-        console.warn('Modo local / no se pudo conectar con Drive:', err);
-        updateCloudSyncBadge('local', 'Copia local activa');
-      }
-    }
-
-    // Parámetros predeterminados de fábrica
+    // Parámetros predeterminados de fábrica exhaustivos
     const FACTORY_DEFAULT_SETTINGS = {
+      // General
       emailMaxWidth: '900px',
+      edesUrlPattern: '{ID}',
+
+      // Titular
       headerKicker: 'Comisiones Obreras | Unión Comarcal Sur',
+      headerTitle: 'Titular principal del bloque',
       headerAlign: 'left',
+
+      // Imagen
+      imageSourceType: 'url',
+      imageEdesId: '',
+      imageDefaultUrl: 'https://placehold.co/1100x420/CC0000/FFFFFF/png?text=CCOO+MADRID+SUR+%7C+HUELGA+GENERAL+%2311N',
+      imagePlaceholderSize: '1100x420',
+      imagePlaceholderText: 'CCOO MADRID SUR | HUELGA GENERAL #11N',
+      imageMaxWidth: '100%',
+      imageAlign: 'center',
+      imageLinkUrl: '',
+      imageAltText: 'Cartel informativo',
+      imageCaption: '',
+      imageRounded: true,
+
+      // Texto Rico
       textFontSize: '15px',
       textAlign: 'left',
-      imageSourceType: 'url',
-      imageAlign: 'center',
-      edesUrlPattern: '{ID}',
+      textDefaultHtml: '<p>Escribe aquí el contenido del texto. Puedes usar <strong>negritas</strong> o <span style="color: #CC0000;"><strong>rojo corporativo</strong></span>.</p>',
+
+      // Destacado
+      calloutTheme: 'red',
+      calloutTitle: 'Información destacada:',
+      calloutText: 'Aviso importante o recordatorio.',
+
+      // Botón CTA
       btnText: 'INSCRIBIRME AHORA',
+      btnUrl: 'https://',
+      btnStyle: 'red',
+      btnAlign: 'center',
+      btnHelperNote: '',
+
+      // Lema Cierre
+      closingShowHr: true,
       closingLine: '¡Viva la lucha de la clase trabajadora!',
       signatureRed: 'Comisiones Obreras · Unión Comarcal Sur',
+
+      // Pie UC Sur
       addressLine1: 'San José de Calasanz, 22',
       addressLine2: '28902 Getafe (Madrid)',
       phone: '91 681 28 59',
@@ -933,39 +1180,51 @@
           return {
             ...base,
             kicker: userSettings.headerKicker || 'Comisiones Obreras | Unión Comarcal Sur',
-            title: 'Titular principal del bloque',
+            title: userSettings.headerTitle || 'Titular principal del bloque',
             align: userSettings.headerAlign || 'left'
           };
         case 'image':
           return {
             ...base,
             imageSourceType: userSettings.imageSourceType || 'url',
-            edesId: '',
-            placeholderSize: '1100x420',
-            placeholderText: 'CCOO MADRID SUR | HUELGA GENERAL #11N',
-            imageUrl: 'https://placehold.co/1100x420/CC0000/FFFFFF/png?text=CCOO+MADRID+SUR+%7C+HUELGA+GENERAL+%2311N',
-            altText: 'Cartel informativo',
-            linkUrl: '',
-            maxWidth: '100%',
+            edesId: userSettings.imageEdesId || '',
+            placeholderSize: userSettings.imagePlaceholderSize || '1100x420',
+            placeholderText: userSettings.imagePlaceholderText || 'CCOO MADRID SUR',
+            imageUrl: userSettings.imageDefaultUrl || 'https://placehold.co/1100x420/CC0000/FFFFFF/png?text=CCOO+MADRID+SUR',
+            altText: userSettings.imageAltText || 'Cartel informativo',
+            linkUrl: userSettings.imageLinkUrl || '',
+            maxWidth: userSettings.imageMaxWidth || '100%',
             align: userSettings.imageAlign || 'center',
-            rounded: true,
-            caption: ''
+            rounded: userSettings.imageRounded !== undefined ? userSettings.imageRounded : true,
+            caption: userSettings.imageCaption || ''
           };
         case 'richtext':
           return {
             ...base,
             fontSize: userSettings.textFontSize || '15px',
             textAlign: userSettings.textAlign || 'left',
-            html: '<p>Escribe aquí el contenido del texto. Puedes usar <strong>negritas</strong> o <span style="color: #CC0000;"><strong>rojo corporativo</strong></span>.</p>'
+            html: userSettings.textDefaultHtml || '<p>Escribe aquí el contenido del texto. Puedes usar <strong>negritas</strong> o <span style="color: #CC0000;"><strong>rojo corporativo</strong></span>.</p>'
           };
         case 'callout':
-          return { ...base, theme: 'red', title: 'Información destacada:', text: 'Aviso importante o recordatorio.' };
+          return {
+            ...base,
+            theme: userSettings.calloutTheme || 'red',
+            title: userSettings.calloutTitle !== undefined ? userSettings.calloutTitle : 'Información destacada:',
+            text: userSettings.calloutText !== undefined ? userSettings.calloutText : 'Aviso importante o recordatorio.'
+          };
         case 'button':
-          return { ...base, btnText: userSettings.btnText || 'INSCRIBIRME AHORA', btnUrl: 'https://', align: 'center', style: 'red', helperNote: '' };
+          return {
+            ...base,
+            btnText: userSettings.btnText || 'INSCRIBIRME AHORA',
+            btnUrl: userSettings.btnUrl || 'https://',
+            align: userSettings.btnAlign || 'center',
+            style: userSettings.btnStyle || 'red',
+            helperNote: userSettings.btnHelperNote || ''
+          };
         case 'closing':
           return {
             ...base,
-            showHr: true,
+            showHr: userSettings.closingShowHr !== undefined ? userSettings.closingShowHr : true,
             closingLine: userSettings.closingLine !== undefined ? userSettings.closingLine : '¡Viva la lucha de la clase trabajadora!',
             signatureRed: userSettings.signatureRed !== undefined ? userSettings.signatureRed : 'Comisiones Obreras · Unión Comarcal Sur'
           };
@@ -1334,14 +1593,16 @@ ${innerBlocksHtml}
     }
 
     const blocksListContainer = document.getElementById('blocksListContainer');
-    const liveEmailRender = document.getElementById('liveEmailRender');
+    const liveEmailRenderDesktop = document.getElementById('liveEmailRenderDesktop');
+    const liveEmailRenderMobile = document.getElementById('liveEmailRenderMobile');
     const rawHtmlOutput = document.getElementById('rawHtmlOutput');
     const blockCounterLabel = document.getElementById('blockCounterLabel');
 
     function updatePreviewOnly() {
       const liveHtml = buildFullEmailDocumentHtml(true);
       const exportHtml = buildFullEmailDocumentHtml(false);
-      liveEmailRender.innerHTML = liveHtml;
+      if (liveEmailRenderDesktop) liveEmailRenderDesktop.innerHTML = liveHtml;
+      if (liveEmailRenderMobile) liveEmailRenderMobile.innerHTML = liveHtml;
       rawHtmlOutput.value = exportHtml;
       const activeCount = blocksState.filter(b => b.visible).length;
       blockCounterLabel.textContent = `${activeCount} de ${blocksState.length} bloques visibles`;
@@ -2026,9 +2287,8 @@ ${innerBlocksHtml}
     const tabCodeBtn = document.getElementById('tabCodeBtn');
     const previewContainer = document.getElementById('previewContainer');
     const codeContainer = document.getElementById('codeContainer');
-    const previewViewport = document.getElementById('previewViewport');
-    const mobilePhoneNotch = document.getElementById('mobilePhoneNotch');
-    const mobilePhoneHomeBar = document.getElementById('mobilePhoneHomeBar');
+    const desktopPreviewWrapper = document.getElementById('desktopPreviewWrapper');
+    const mobilePhoneChassis = document.getElementById('mobilePhoneChassis');
     const viewportInfoText = document.getElementById('viewportInfoText');
 
     const activeTabClass = 'px-3 py-1.5 rounded-md text-xs font-bold bg-white text-slate-900 shadow-xs transition';
@@ -2038,11 +2298,8 @@ ${innerBlocksHtml}
       if (mode === 'desktop') {
         previewContainer.classList.remove('hidden');
         codeContainer.classList.add('hidden');
-        previewViewport.classList.remove('mobile-device-frame');
-        previewViewport.style.maxWidth = '100%';
-        mobilePhoneNotch.classList.add('hidden');
-        mobilePhoneNotch.classList.remove('flex');
-        mobilePhoneHomeBar.classList.add('hidden');
+        desktopPreviewWrapper.classList.remove('hidden');
+        mobilePhoneChassis.classList.add('hidden');
         tabDesktopBtn.className = activeTabClass;
         tabMobileBtn.className = inactiveTabClass;
         tabCodeBtn.className = inactiveTabClass;
@@ -2051,15 +2308,12 @@ ${innerBlocksHtml}
       } else if (mode === 'mobile') {
         previewContainer.classList.remove('hidden');
         codeContainer.classList.add('hidden');
-        previewViewport.classList.add('mobile-device-frame');
-        previewViewport.style.maxWidth = '395px';
-        mobilePhoneNotch.classList.remove('hidden');
-        mobilePhoneNotch.classList.add('flex');
-        mobilePhoneHomeBar.classList.remove('hidden');
+        desktopPreviewWrapper.classList.add('hidden');
+        mobilePhoneChassis.classList.remove('hidden');
         tabDesktopBtn.className = inactiveTabClass;
         tabMobileBtn.className = activeTabClass;
         tabCodeBtn.className = inactiveTabClass;
-        if (viewportInfoText) viewportInfoText.textContent = 'Simulación smartphone (375px sin desbordamiento)';
+        if (viewportInfoText) viewportInfoText.textContent = 'Simulación smartphone 375px con scroll hermético';
       } else if (mode === 'code') {
         previewContainer.classList.add('hidden');
         codeContainer.classList.remove('hidden');
@@ -2074,20 +2328,71 @@ ${innerBlocksHtml}
     tabMobileBtn.addEventListener('click', () => switchPreviewMode('mobile'));
     tabCodeBtn.addEventListener('click', () => switchPreviewMode('code'));
 
-    // MODAL DE CONFIGURACIÓN PREDETERMINADA
+    // GESTIÓN DEL MODAL DE CONFIGURACIÓN PREDETERMINADA AVANZADA
     const settingsModal = document.getElementById('settingsModal');
 
+    // Navegación por pestañas del modal de configuración
+    document.querySelectorAll('[data-cfg-tab]').forEach(tabBtn => {
+      tabBtn.addEventListener('click', () => {
+        const targetTab = tabBtn.getAttribute('data-cfg-tab');
+        document.querySelectorAll('[data-cfg-tab]').forEach(b => {
+          b.className = 'cfg-tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition whitespace-nowrap';
+        });
+        tabBtn.className = 'cfg-tab-btn px-3 py-2 rounded-lg text-xs font-bold text-[#CC0000] bg-white shadow-2xs border border-slate-200 transition whitespace-nowrap';
+        document.querySelectorAll('.cfg-tab-pane').forEach(pane => {
+          pane.classList.add('hidden');
+        });
+        const activePane = document.getElementById(`cfgPane_${targetTab}`);
+        if (activePane) activePane.classList.remove('hidden');
+      });
+    });
+
     function populateSettingsForm() {
+      // General
       document.getElementById('cfgEmailMaxWidth').value = userSettings.emailMaxWidth || '900px';
-      document.getElementById('cfgTextFontSize').value = userSettings.textFontSize || '15px';
-      document.getElementById('cfgTextAlign').value = userSettings.textAlign || 'left';
+      document.getElementById('cfgEdesUrlPattern').value = userSettings.edesUrlPattern || '{ID}';
+
+      // Titular
       document.getElementById('cfgHeaderKicker').value = userSettings.headerKicker || '';
+      document.getElementById('cfgHeaderTitle').value = userSettings.headerTitle || '';
+      document.getElementById('cfgHeaderAlign').value = userSettings.headerAlign || 'left';
+
+      // Imagen
       document.getElementById('cfgImageSourceType').value = userSettings.imageSourceType || 'url';
       document.getElementById('cfgImageAlign').value = userSettings.imageAlign || 'center';
-      document.getElementById('cfgEdesUrlPattern').value = userSettings.edesUrlPattern || '{ID}';
+      document.getElementById('cfgImageMaxWidth').value = userSettings.imageMaxWidth || '100%';
+      document.getElementById('cfgImageDefaultUrl').value = userSettings.imageDefaultUrl || '';
+      document.getElementById('cfgImageEdesId').value = userSettings.imageEdesId || '';
+      document.getElementById('cfgImagePlaceholderSize').value = userSettings.imagePlaceholderSize || '1100x420';
+      document.getElementById('cfgImagePlaceholderText').value = userSettings.imagePlaceholderText || '';
+      document.getElementById('cfgImageAltText').value = userSettings.imageAltText || '';
+      document.getElementById('cfgImageLinkUrl').value = userSettings.imageLinkUrl || '';
+      document.getElementById('cfgImageCaption').value = userSettings.imageCaption || '';
+      document.getElementById('cfgImageRounded').checked = userSettings.imageRounded !== undefined ? !!userSettings.imageRounded : true;
+
+      // Texto Rico
+      document.getElementById('cfgTextFontSize').value = userSettings.textFontSize || '15px';
+      document.getElementById('cfgTextAlign').value = userSettings.textAlign || 'left';
+      document.getElementById('cfgTextDefaultHtml').value = userSettings.textDefaultHtml || '';
+
+      // Destacado
+      document.getElementById('cfgCalloutTheme').value = userSettings.calloutTheme || 'red';
+      document.getElementById('cfgCalloutTitle').value = userSettings.calloutTitle || '';
+      document.getElementById('cfgCalloutText').value = userSettings.calloutText || '';
+
+      // Botón CTA
+      document.getElementById('cfgBtnText').value = userSettings.btnText || '';
+      document.getElementById('cfgBtnUrl').value = userSettings.btnUrl || '';
+      document.getElementById('cfgBtnStyle').value = userSettings.btnStyle || 'red';
+      document.getElementById('cfgBtnAlign').value = userSettings.btnAlign || 'center';
+      document.getElementById('cfgBtnHelperNote').value = userSettings.btnHelperNote || '';
+
+      // Lema Cierre
       document.getElementById('cfgClosingLine').value = userSettings.closingLine || '';
       document.getElementById('cfgSignatureRed').value = userSettings.signatureRed || '';
-      document.getElementById('cfgBtnText').value = userSettings.btnText || '';
+      document.getElementById('cfgClosingShowHr').checked = userSettings.closingShowHr !== undefined ? !!userSettings.closingShowHr : true;
+
+      // Pie UC Sur
       document.getElementById('cfgAddressLine1').value = userSettings.addressLine1 || '';
       document.getElementById('cfgAddressLine2').value = userSettings.addressLine2 || '';
       document.getElementById('cfgPhone').value = userSettings.phone || '';
@@ -2111,16 +2416,51 @@ ${innerBlocksHtml}
     function readSettingsFromForm() {
       userSettings = {
         ...userSettings,
+        // General
         emailMaxWidth: document.getElementById('cfgEmailMaxWidth').value || '900px',
-        textFontSize: document.getElementById('cfgTextFontSize').value,
-        textAlign: document.getElementById('cfgTextAlign').value,
+        edesUrlPattern: document.getElementById('cfgEdesUrlPattern').value.trim() || '{ID}',
+
+        // Titular
         headerKicker: document.getElementById('cfgHeaderKicker').value.trim(),
+        headerTitle: document.getElementById('cfgHeaderTitle').value.trim(),
+        headerAlign: document.getElementById('cfgHeaderAlign').value,
+
+        // Imagen
         imageSourceType: document.getElementById('cfgImageSourceType').value,
         imageAlign: document.getElementById('cfgImageAlign').value || 'center',
-        edesUrlPattern: document.getElementById('cfgEdesUrlPattern').value.trim() || '{ID}',
+        imageMaxWidth: document.getElementById('cfgImageMaxWidth').value || '100%',
+        imageDefaultUrl: document.getElementById('cfgImageDefaultUrl').value.trim(),
+        imageEdesId: document.getElementById('cfgImageEdesId').value.trim(),
+        imagePlaceholderSize: document.getElementById('cfgImagePlaceholderSize').value,
+        imagePlaceholderText: document.getElementById('cfgImagePlaceholderText').value.trim(),
+        imageAltText: document.getElementById('cfgImageAltText').value.trim(),
+        imageLinkUrl: document.getElementById('cfgImageLinkUrl').value.trim(),
+        imageCaption: document.getElementById('cfgImageCaption').value.trim(),
+        imageRounded: document.getElementById('cfgImageRounded').checked,
+
+        // Texto Rico
+        textFontSize: document.getElementById('cfgTextFontSize').value,
+        textAlign: document.getElementById('cfgTextAlign').value,
+        textDefaultHtml: document.getElementById('cfgTextDefaultHtml').value.trim(),
+
+        // Destacado
+        calloutTheme: document.getElementById('cfgCalloutTheme').value,
+        calloutTitle: document.getElementById('cfgCalloutTitle').value.trim(),
+        calloutText: document.getElementById('cfgCalloutText').value.trim(),
+
+        // Botón CTA
+        btnText: document.getElementById('cfgBtnText').value.trim(),
+        btnUrl: document.getElementById('cfgBtnUrl').value.trim(),
+        btnStyle: document.getElementById('cfgBtnStyle').value,
+        btnAlign: document.getElementById('cfgBtnAlign').value,
+        btnHelperNote: document.getElementById('cfgBtnHelperNote').value.trim(),
+
+        // Lema Cierre
         closingLine: document.getElementById('cfgClosingLine').value.trim(),
         signatureRed: document.getElementById('cfgSignatureRed').value.trim(),
-        btnText: document.getElementById('cfgBtnText').value.trim(),
+        closingShowHr: document.getElementById('cfgClosingShowHr').checked,
+
+        // Pie UC Sur
         addressLine1: document.getElementById('cfgAddressLine1').value.trim(),
         addressLine2: document.getElementById('cfgAddressLine2').value.trim(),
         phone: document.getElementById('cfgPhone').value.trim(),
@@ -2147,6 +2487,75 @@ ${innerBlocksHtml}
       populateSettingsForm();
       settingsModal.classList.remove('hidden');
       settingsModal.classList.add('flex');
+    });
+
+    function closeSettingsModal() {
+      settingsModal.classList.add('hidden');
+      settingsModal.classList.remove('flex');
+    }
+
+    document.getElementById('btnCloseSettingsModal').addEventListener('click', closeSettingsModal);
+    document.getElementById('btnCancelSettings').addEventListener('click', closeSettingsModal);
+
+    document.getElementById('btnResetDefaultSettings').addEventListener('click', async () => {
+      userSettings = { ...FACTORY_DEFAULT_SETTINGS };
+      saveUserSettings();
+      populateSettingsForm();
+      await initOfficialVectorAssets();
+      showToast('Valores restaurados', 'Se han cargado los parámetros de fábrica.');
+    });
+
+    document.getElementById('btnSaveSettingsOnly').addEventListener('click', async () => {
+      readSettingsFromForm();
+      await initOfficialVectorAssets();
+      closeSettingsModal();
+      showToast('Configuración guardada', 'Se aplicará a los nuevos bloques que añadas.');
+    });
+
+    document.getElementById('btnSaveAndApplySettings').addEventListener('click', async () => {
+      readSettingsFromForm();
+      await initOfficialVectorAssets();
+
+      // Aplicar exhaustivamente a todos los bloques activos en el correo
+      blocksState.forEach(blk => {
+        if (blk.type === 'header') {
+          blk.kicker = userSettings.headerKicker;
+          blk.align = userSettings.headerAlign;
+        } else if (blk.type === 'image') {
+          blk.align = userSettings.imageAlign;
+          blk.maxWidth = userSettings.imageMaxWidth;
+          blk.rounded = userSettings.imageRounded;
+        } else if (blk.type === 'richtext') {
+          blk.fontSize = userSettings.textFontSize;
+          blk.textAlign = userSettings.textAlign;
+        } else if (blk.type === 'callout') {
+          blk.theme = userSettings.calloutTheme;
+        } else if (blk.type === 'button') {
+          blk.style = userSettings.btnStyle;
+          blk.align = userSettings.btnAlign;
+        } else if (blk.type === 'closing') {
+          blk.showHr = userSettings.closingShowHr;
+          blk.closingLine = userSettings.closingLine;
+          blk.signatureRed = userSettings.signatureRed;
+        } else if (blk.type === 'footer_ucsur') {
+          blk.addressLine1 = userSettings.addressLine1;
+          blk.addressLine2 = userSettings.addressLine2;
+          blk.phone = userSettings.phone;
+          blk.email = userSettings.email;
+          blk.followLabel = userSettings.followLabel;
+          blk.socialHandleText = userSettings.socialHandleText;
+          blk.showX = userSettings.showX; blk.xUrl = userSettings.xUrl;
+          blk.showFb = userSettings.showFb; blk.fbUrl = userSettings.fbUrl;
+          blk.showInsta = userSettings.showInsta; blk.instaUrl = userSettings.instaUrl;
+          blk.showYt = userSettings.showYt; blk.ytUrl = userSettings.ytUrl;
+          blk.showTiktok = userSettings.showTiktok; blk.tiktokUrl = userSettings.tiktokUrl;
+          blk.showBsky = userSettings.showBsky; blk.bskyUrl = userSettings.bskyUrl;
+        }
+      });
+
+      renderAllBlocksUI();
+      closeSettingsModal();
+      showToast('Configuración aplicada', 'Actualizados los parámetros predeterminados y el correo.');
     });
 
     function closeSettingsModal() {
