@@ -91,6 +91,7 @@
       overflow-x: hidden;
       background: #f8fafc;
       -webkit-overflow-scrolling: touch;
+      padding: 0;
     }
     .mobile-phone-bottom-bar {
       height: 18px;
@@ -718,11 +719,11 @@
           .replace('width="680" height="245"', 'class="h-9 sm:h-10 w-auto"');
       }
 
-      RASTER_CACHE.logoDarkSub = await rasterizeSvgToPngDataUrl(getOfficialUcsurLogoSvgString('#111111', 'unión comarcal Sur'), 310, 112);
+      RASTER_CACHE.logoDarkSub = await rasterizeSvgToPngDataUrl(getOfficialUcsurLogoSvgString('#111111', 'unión comarcal Sur'), 260, 94);
       const keys = Object.keys(SOCIAL_SVG_VECTORS);
       for (let i = 0; i < keys.length; i++) {
         const k = keys[i];
-        RASTER_CACHE.social[k] = await rasterizeSvgToPngDataUrl(SOCIAL_SVG_VECTORS[k], 52, 52);
+        RASTER_CACHE.social[k] = await rasterizeSvgToPngDataUrl(SOCIAL_SVG_VECTORS[k], 44, 44);
       }
       updatePreviewOnly();
     }
@@ -734,7 +735,7 @@
         edesPattern: '[EDES:{ID}]'
       },
       header: {
-        kicker: 'Comisiones Obreras | Unión Comarcal Sur',
+        kicker: 'Unión Comarcal Sur | Comisiones Obreras de Madrid',
         title: 'Titular principal del comunicado',
         align: 'left'
       },
@@ -768,16 +769,16 @@
       },
       closing: {
         showHr: true,
-        closingLine: '¡Viva la lucha de la clase trabajadora!',
-        signatureRed: 'Comisiones Obreras · Unión Comarcal Sur'
+        closingLine: 'Un saludo fraternal.',
+        signatureRed: 'Unión Comarcal Sur de CCOO de Madrid'
       },
       footer: {
         addressLine1: 'San José de Calasanz, 22',
         addressLine2: '28902 Getafe (Madrid)',
         phone: '91 681 28 59',
-        email: 'ccoogetafe@usmr.ccoo.es',
+        email: 'ccoomadridsur@usmr.ccoo.es',
         followLabel: 'Síguenos en:',
-        socialHandleText: '@ccoomadridsur',
+        socialHandleText: '',
         showX: true, xUrl: 'https://x.com/ccoomadridsur',
         showFb: true, fbUrl: 'https://www.facebook.com/ccoomadridsur',
         showInsta: true, instaUrl: 'https://www.instagram.com/ccoomadridsur',
@@ -848,7 +849,7 @@
       });
 
       tempDiv.querySelectorAll('p').forEach(p => {
-        p.setAttribute('style', 'margin: 0 0 15px 0; font-family: Arial, Helvetica, sans-serif; font-size: ' + fSize + '; line-height: 1.5; color: #333333; text-align: ' + tAlign + ';');
+        p.setAttribute('style', 'margin: 0 0 15px 0; font-family: Arial, Helvetica, sans-serif; font-size: ' + fSize + '; line-height: 1.5; color: #333333; text-align: ' + tAlign + '; word-break: break-word;');
       });
       tempDiv.querySelectorAll('ul').forEach(ul => {
         ul.setAttribute('style', 'margin: 0 0 15px 0; padding-left: 22px; font-family: Arial, Helvetica, sans-serif; font-size: ' + fSize + '; line-height: 1.5; color: #333333; list-style-type: disc;');
@@ -875,8 +876,8 @@
         const title = escapeHtml((blk.title || '').trim());
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 0 0 18px 0;">' +
           '<tr><td align="' + align + '" style="text-align: ' + align + '; font-family: Arial, Helvetica, sans-serif;">' +
-          (kicker ? '<p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold; color: #CC0000; text-transform: uppercase; letter-spacing: 0.8px;">' + kicker + '</p>' : '') +
-          (title ? '<h1 style="margin: 0; font-size: 22px; line-height: 28px; color: #222222; font-weight: bold;">' + title + '</h1>' : '') +
+          (kicker ? '<p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold; color: #CC0000; text-transform: uppercase; letter-spacing: 0.8px; word-break: break-word;">' + kicker + '</p>' : '') +
+          (title ? '<h1 style="margin: 0; font-size: 22px; line-height: 28px; color: #222222; font-weight: bold; word-break: break-word;">' + title + '</h1>' : '') +
           '</td></tr></table>';
       }
 
@@ -900,7 +901,7 @@
 
         let innerImageHtml = '';
         if (!src && method === 'edes') {
-          innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + maxW + '; background:#fff1f2; border:2px dashed #fda4af; padding:28px 16px; border-radius:6px; color:#9f1239; font-weight:bold; font-size:13px; text-align:center;">[ Inserte ID de imagen EDES ]</div>';
+          innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + maxW + '; background:#fff1f2; border:2px dashed #fda4af; padding:24px 14px; border-radius:6px; color:#9f1239; font-weight:bold; font-size:13px; text-align:center;">[ Inserte ID de imagen EDES ]</div>';
         } else {
           const maxWidthStyle = maxW === '100%' ? 'width: 100%; max-width: 100%;' : 'width: 100%; max-width: ' + maxW + ';';
           const imgTag = '<img src="' + escapeHtml(src) + '" alt="' + alt + '" border="0" style="display: block; ' + maxWidthStyle + ' height: auto; border: 0; outline: none; margin: 0 auto; ' + radius + '">';
@@ -926,7 +927,7 @@
         if (blk.theme === 'amber') { bg = '#fff8e1'; border = '#ffb300'; }
         if (blk.theme === 'gray') { bg = '#f4f4f6'; border = '#444444'; }
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: ' + bg + '; border-left: 4px solid ' + border + '; margin: 16px 0 20px 0;">' +
-          '<tr><td style="padding: 14px 16px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 20px; color: #222222;">' +
+          '<tr><td style="padding: 14px 16px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 20px; color: #222222; word-break: break-word;">' +
           (blk.title ? '<strong style="display: block; margin-bottom: 4px; color: #111111;">' + escapeHtml(blk.title) + '</strong>' : '') +
           escapeHtml(blk.text || '').split('\n').join('<br>') +
           '</td></tr></table>';
@@ -953,7 +954,7 @@
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 18px 0;">' +
           '<tr><td style="font-family: Arial, Helvetica, sans-serif;">' +
           (blk.showHr ? '<hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 0 0 18px 0;">' : '') +
-          '<p style="margin: 0; font-size: 14px; line-height: 20px; color: #222222; font-weight: bold;">' +
+          '<p style="margin: 0; font-size: 14px; line-height: 20px; color: #222222; font-weight: bold; word-break: break-word;">' +
           (blk.closingLine ? escapeHtml(blk.closingLine) + '<br>' : '') +
           (blk.signatureRed ? '<span style="color: #CC0000;">' + escapeHtml(blk.signatureRed) + '</span>' : '') +
           '</p></td></tr></table>';
@@ -961,7 +962,7 @@
 
       if (blk.type === 'footer_ucsur') {
         const logoSrc = RASTER_CACHE.logoDarkSub || ('data:image/svg+xml;utf8,' + encodeURIComponent(getOfficialUcsurLogoSvgString('#111111', 'unión comarcal Sur')));
-        const logoImg = '<img src="' + logoSrc + '" alt="CCOO Unión Comarcal Sur" width="140" height="50" border="0" style="display:block; width:140px; height:auto; max-width:140px; border:0;">';
+        const logoImg = '<img src="' + logoSrc + '" alt="CCOO Unión Comarcal Sur" width="105" height="38" border="0" style="display:block; width:105px; height:auto; max-width:105px; border:0;">';
 
         const socialDefs = [
           { enabled: blk.showX, key: 'x', label: 'X', url: blk.xUrl },
@@ -974,9 +975,9 @@
 
         const activeIcons = socialDefs.filter(i => i.enabled).map(i => {
           const iconSrc = RASTER_CACHE.social[i.key] || ('data:image/svg+xml;utf8,' + encodeURIComponent(SOCIAL_SVG_VECTORS[i.key]));
-          return '<td width="30" align="center" valign="middle" style="padding: 0 3px;">' +
+          return '<td width="26" align="center" valign="middle" style="padding: 0 2px;">' +
             '<a href="' + escapeHtml(i.url) + '" target="_blank" style="text-decoration:none; display:inline-block;">' +
-            '<img src="' + iconSrc + '" alt="' + i.label + '" width="24" height="24" border="0" style="display:block; width:24px; height:24px; border-radius:50%;">' +
+            '<img src="' + iconSrc + '" alt="' + i.label + '" width="22" height="22" border="0" style="display:block; width:22px; height:22px; border-radius:50%;">' +
             '</a></td>';
         });
 
@@ -990,23 +991,22 @@
         const socialRow = (activeIcons.length > 0 || handleText) ?
           '<tr><td align="center" valign="middle" style="padding-top: 14px;">' +
           '<table border="0" cellspacing="0" cellpadding="0" align="center"><tr>' +
-          (followText ? '<td valign="middle" style="padding-right: 8px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #222222; white-space: nowrap;">' + followText + '</td>' : '') +
+          (followText ? '<td valign="middle" style="padding-right: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 11.5px; font-weight: bold; color: #222222; white-space: nowrap;">' + followText + '</td>' : '') +
           activeIcons.join('') +
-          (handleText ? '<td valign="middle" style="padding-left: 8px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #CC0000; white-space: nowrap;">' + handleText + '</td>' : '') +
+          (handleText ? '<td valign="middle" style="padding-left: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 11.5px; font-weight: bold; color: #CC0000; white-space: nowrap;">' + handleText + '</td>' : '') +
           '</tr></table></td></tr>' : '';
 
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 24px; padding-top: 16px; border-top: 2px solid #e5e7eb; background-color: #ffffff;">' +
           '<tr><td align="center">' +
           '<table border="0" cellspacing="0" cellpadding="0" align="center">' +
           '<tr>' +
-          '<td valign="middle" style="padding-right: 18px;">' + logoImg + '</td>' +
-          '<td valign="middle" align="left" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 18px; color: #222222; text-align: left;">' +
+          '<td valign="middle" style="padding-right: 12px; width: 105px; min-width: 105px;">' + logoImg + '</td>' +
+          '<td valign="middle" align="left" style="font-family: Arial, Helvetica, sans-serif; font-size: 11.5px; line-height: 17px; color: #222222; text-align: left;">' +
           '<span style="display:block;">' + escapeHtml(blk.addressLine1 || 'San José de Calasanz, 22') + '</span>' +
           '<span style="display:block;">' + escapeHtml(blk.addressLine2 || '28902 Getafe (Madrid)') + '</span>' +
-          '<span style="display:block; margin-top: 2px;">' +
-          (blk.phone ? '<span style="white-space:nowrap; margin-right:8px;"><strong>Tfno:</strong> ' + escapeHtml(blk.phone) + '</span>' : '') +
-          (blk.email ? '<span style="white-space:nowrap;"><strong>Email:</strong> <a href="mailto:' + escapeHtml(blk.email) + '" style="color:#111111; text-decoration:none;">' + escapeHtml(blk.email) + '</a></span>' : '') +
-          '</span></td></tr></table>' +
+          (blk.phone ? '<span style="display:block; margin-top: 2px;"><strong>Tfno:</strong> ' + escapeHtml(blk.phone) + '</span>' : '') +
+          (blk.email ? '<span style="display:block; margin-top: 2px;"><strong>Email:</strong> <a href="mailto:' + escapeHtml(blk.email) + '" style="color:#111111; text-decoration:none;">' + escapeHtml(blk.email) + '</a></span>' : '') +
+          '</td></tr></table>' +
           '</td></tr>' + socialRow + '</table>';
       }
 
@@ -1018,10 +1018,10 @@
       const maxW = userSettings.general.desktopMaxWidth || '800px';
       const containerStyle = (maxW === '100%') ? 'width: 100%;' : 'max-width: ' + maxW + '; width: 100%;';
 
-      return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4; padding: 15px 0; font-family: Arial, Helvetica, sans-serif;">\n' +
-        '  <tr>\n    <td align="center">\n' +
-        '      <table border="0" cellspacing="0" cellpadding="0" style="' + containerStyle + ' background-color: #ffffff; border: 1px solid #dddddd; border-top: 5px solid #CC0000; box-sizing: border-box;">\n' +
-        '        <tr>\n          <td style="padding: 24px 20px;">\n' +
+      return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4; margin: 0; padding: 12px 0; font-family: Arial, Helvetica, sans-serif;">\n' +
+        '  <tr>\n    <td align="center" style="padding: 0 8px;">\n' +
+        '      <table border="0" cellspacing="0" cellpadding="0" style="' + containerStyle + ' background-color: #ffffff; border: 1px solid #dddddd; border-top: 5px solid #CC0000; box-sizing: border-box; table-layout: auto;">\n' +
+        '        <tr>\n          <td style="padding: 20px 14px; word-break: break-word;">\n' +
         innerBlocks +
         '\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n</table>';
     }
@@ -1266,7 +1266,7 @@
           '<div class="border-t border-slate-200 pt-3 space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
           '<div><label for="' + pfx + 'follow" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Etiqueta "Síguenos en:"</label><input type="text" id="' + pfx + 'follow" name="followLabel" data-field="followLabel" value="' + escapeHtml(blk.followLabel !== undefined ? blk.followLabel : 'Síguenos en:') + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div><label for="' + pfx + 'handle" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Usuario / Handle redes</label><input type="text" id="' + pfx + 'handle" name="socialHandleText" data-field="socialHandleText" value="' + escapeHtml(blk.socialHandleText !== undefined ? blk.socialHandleText : '@ccoomadridsur') + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold text-[#CC0000] focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div><label for="' + pfx + 'handle" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Usuario / Handle redes</label><input type="text" id="' + pfx + 'handle" name="socialHandleText" data-field="socialHandleText" value="' + escapeHtml(blk.socialHandleText !== undefined ? blk.socialHandleText : '') + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold text-[#CC0000] focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>' +
           '<label class="block text-[11px] font-bold text-slate-700 uppercase">Redes sociales activas:</label>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">' +
@@ -1519,7 +1519,7 @@
       document.getElementById('cfgFooter_phone').value = userSettings.footer.phone || '';
       document.getElementById('cfgFooter_email').value = userSettings.footer.email || '';
       document.getElementById('cfgFooter_followLabel').value = (userSettings.footer.followLabel !== undefined) ? userSettings.footer.followLabel : 'Síguenos en:';
-      document.getElementById('cfgFooter_socialHandleText').value = (userSettings.footer.socialHandleText !== undefined) ? userSettings.footer.socialHandleText : '@ccoomadridsur';
+      document.getElementById('cfgFooter_socialHandleText').value = (userSettings.footer.socialHandleText !== undefined) ? userSettings.footer.socialHandleText : '';
       document.getElementById('cfgFooter_showX').checked = !!userSettings.footer.showX;
       document.getElementById('cfgFooter_xUrl').value = userSettings.footer.xUrl || '';
       document.getElementById('cfgFooter_showFb').checked = !!userSettings.footer.showFb;
@@ -1599,7 +1599,7 @@
         }
         if (blk.type === 'header') {
           blk.align = userSettings.header.align;
-          if (!blk.kicker) blk.kicker = userSettings.header.kicker;
+          if (userSettings.header.kicker) blk.kicker = userSettings.header.kicker;
         }
         if (blk.type === 'image') {
           blk.align = userSettings.image.align;
