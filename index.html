@@ -33,7 +33,7 @@
     
     .block-card {
       transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
-      scroll-margin-top: 230px;
+      scroll-margin-top: 250px;
     }
     .block-card.dragging {
       opacity: 0.45;
@@ -108,6 +108,22 @@
     .timeline-item.tl-drag-right {
       border-right: 4px solid #CC0000 !important;
       padding-right: 3px;
+    }
+
+    /* Zona de papelera al arrastrar */
+    .trash-drop-zone {
+      transition: all 0.2s ease;
+    }
+    .trash-drop-zone.drag-active-hover {
+      background-color: #dc2626 !important;
+      color: #ffffff !important;
+      border-color: #991b1b !important;
+      transform: scale(1.02);
+      box-shadow: 0 6px 15px -3px rgba(220, 38, 38, 0.35);
+    }
+    .trash-drop-zone.drag-active-hover i,
+    .trash-drop-zone.drag-active-hover span {
+      color: #ffffff !important;
     }
 
     /* Chasis de Teléfono Móvil sin desbordamiento */
@@ -242,7 +258,7 @@
 
     <!-- COLUMNA IZQUIERDA: CONSTRUCTOR Y LÍNEA DE TIEMPO -->
     <section class="lg:col-span-6 space-y-4">
-      <!-- PANEL STICKY SUPERIOR: INSERTAR + LÍNEA DE TIEMPO -->
+      <!-- PANEL STICKY SUPERIOR: INSERTAR + LÍNEA DE TIEMPO + PAPELERA -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3.5 sticky top-[58px] z-20 space-y-3">
         <div>
           <div class="flex items-center justify-between mb-2">
@@ -261,7 +277,7 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-1.5">
+          <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-1.5">
             <button type="button" draggable="true" data-add-type="header" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
               <i class="fa-solid fa-heading text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
               <span class="text-[11px] font-semibold leading-tight text-center">Titular</span>
@@ -273,6 +289,10 @@
             <button type="button" draggable="true" data-add-type="richtext" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
               <i class="fa-solid fa-align-left text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
               <span class="text-[11px] font-semibold leading-tight text-center">Texto Rico</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="convocatoria" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-red-200 bg-red-50/20 hover:border-[#CC0000] hover:bg-red-50 text-slate-800 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-bullhorn text-sm mb-1 text-[#CC0000]"></i>
+              <span class="text-[11px] font-bold leading-tight text-center">Convocatoria</span>
             </button>
             <button type="button" draggable="true" data-add-type="callout" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
               <i class="fa-solid fa-quote-left text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
@@ -303,6 +323,12 @@
             <span id="blockCounterLabel" class="text-[11px] font-semibold text-slate-500">0 bloques</span>
           </div>
           <div id="timelineContainer" class="timeline-track"></div>
+
+          <!-- ZONA DE PAPELERA (APARECE AL ARRASTRAR UN BLOQUE EXISTENTE) -->
+          <div id="timelineTrashZone" class="trash-drop-zone hidden mt-2 py-2 px-3 rounded-lg border-2 border-dashed border-red-300 bg-red-50/90 text-red-700 flex items-center justify-center gap-2 text-xs font-bold select-none">
+            <i class="fa-solid fa-trash-can text-sm text-red-600"></i>
+            <span>Suelta el bloque aquí para eliminarlo del correo</span>
+          </div>
         </div>
       </div>
 
@@ -404,6 +430,7 @@
         <button type="button" data-cfg-tab="header" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Titular</button>
         <button type="button" data-cfg-tab="image" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Cartel / Img</button>
         <button type="button" data-cfg-tab="richtext" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Texto Rico</button>
+        <button type="button" data-cfg-tab="convocatoria" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Convocatoria</button>
         <button type="button" data-cfg-tab="callout" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Destacado</button>
         <button type="button" data-cfg-tab="button" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Botón CTA</button>
         <button type="button" data-cfg-tab="closing" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Lema Cierre</button>
@@ -536,6 +563,54 @@
           <div>
             <label for="cfgRichText_initialHtml" class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto inicial al añadir bloque</label>
             <textarea id="cfgRichText_initialHtml" name="cfgRichText_initialHtml" rows="3" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-[#CC0000]"></textarea>
+          </div>
+        </div>
+
+        <!-- CONVOCATORIA -->
+        <div id="cfgTabContent_convocatoria" class="cfg-tab-pane hidden space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="cfgConvocatoria_title" class="block text-xs font-bold text-slate-700 uppercase mb-1">Título del acto por defecto</label>
+              <input type="text" id="cfgConvocatoria_title" name="cfgConvocatoria_title" placeholder="Ej: Asamblea de delegados y delegadas" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-bold focus:outline-none focus:border-[#CC0000]">
+            </div>
+            <div>
+              <label for="cfgConvocatoria_theme" class="block text-xs font-bold text-slate-700 uppercase mb-1">Diseño visual</label>
+              <select id="cfgConvocatoria_theme" name="cfgConvocatoria_theme" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+                <option value="red">Cabecera Roja CCOO + Fondo suave</option>
+                <option value="dark">Cabecera Oscura + Borde Rojo</option>
+                <option value="clean">Borde Izquierdo Rojo Minimalista</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="cfgConvocatoria_dateText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha sugerida</label>
+              <input type="text" id="cfgConvocatoria_dateText" name="cfgConvocatoria_dateText" placeholder="Ej: 29 de septiembre" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+            </div>
+            <div>
+              <label for="cfgConvocatoria_timeText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Hora sugerida</label>
+              <input type="text" id="cfgConvocatoria_timeText" name="cfgConvocatoria_timeText" placeholder="Ej: 18:30 horas" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="cfgConvocatoria_placeText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Lugar habitual</label>
+              <input type="text" id="cfgConvocatoria_placeText" name="cfgConvocatoria_placeText" placeholder="Ej: Sede de CCOO en Getafe" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+            </div>
+            <div>
+              <label for="cfgConvocatoria_addressText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Dirección habitual (con enlace Maps)</label>
+              <input type="text" id="cfgConvocatoria_addressText" name="cfgConvocatoria_addressText" placeholder="Ej: C/ San José de Calasanz, 22, Getafe" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+            </div>
+          </div>
+          <div>
+            <label for="cfgConvocatoria_speakersText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Intervienen (opcional, una persona por línea)</label>
+            <textarea id="cfgConvocatoria_speakersText" name="cfgConvocatoria_speakersText" rows="2" placeholder="Puedes dejarlo vacío o escribir ponentes habituales..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></textarea>
+          </div>
+          <div>
+            <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+              <input type="checkbox" id="cfgConvocatoria_linkMaps" name="cfgConvocatoria_linkMaps" class="rounded text-[#CC0000]">
+              <span>Incrustar automáticamente enlace a Google Maps en la dirección</span>
+            </label>
           </div>
         </div>
 
@@ -855,6 +930,16 @@
         textAlign: 'left',
         initialHtml: '<p>Escribe aquí el contenido del texto sindical. Puedes usar <strong>negritas</strong> o <span style="color: #CC0000;"><strong>rojo corporativo</strong></span>.</p>'
       },
+      convocatoria: {
+        theme: 'red',
+        title: 'Asamblea de delegados y delegadas',
+        dateText: '29 de septiembre',
+        timeText: '18:30 horas',
+        placeText: 'Sede de CCOO en Getafe',
+        addressText: 'C/ San José de Calasanz, 22, Getafe',
+        speakersText: 'Ángela Hernández - Secretaria General de la Comarca Sur',
+        linkMaps: true
+      },
       callout: {
         theme: 'red',
         title: 'Información destacada:',
@@ -892,7 +977,7 @@
     let blocksState = [];
     let cloudDrafts = [];
 
-    // ESTADO DE DRAG & DROP (SOPORTA TANTO REORDENACIÓN COMO INSERCIÓN DE NUEVOS)
+    // ESTADO DE DRAG & DROP
     let dragPayload = null; // { mode: 'reorder' | 'insert', fromIndex?: number, blockType?: string }
 
     function generateId() {
@@ -903,13 +988,13 @@
       header: { label: 'Cabecera / Titular', shortLabel: 'Titular', icon: 'fa-solid fa-heading', badgeColor: 'bg-red-50 text-[#CC0000] border-red-200' },
       image: { label: 'Imagen / Cartel', shortLabel: 'Imagen', icon: 'fa-regular fa-image', badgeColor: 'bg-sky-50 text-sky-700 border-sky-200' },
       richtext: { label: 'Texto Rico', shortLabel: 'Texto', icon: 'fa-solid fa-align-left', badgeColor: 'bg-slate-100 text-slate-700 border-slate-300' },
+      convocatoria: { label: 'Convocatoria / Acto', shortLabel: 'Convocatoria', icon: 'fa-solid fa-bullhorn', badgeColor: 'bg-red-100 text-[#CC0000] border-red-300' },
       callout: { label: 'Caja Destacada', shortLabel: 'Aviso', icon: 'fa-solid fa-quote-left', badgeColor: 'bg-amber-50 text-amber-800 border-amber-200' },
       button: { label: 'Botón CTA', shortLabel: 'Botón', icon: 'fa-solid fa-hand-pointer', badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
       closing: { label: 'Lema Cierre', shortLabel: 'Cierre', icon: 'fa-solid fa-signature', badgeColor: 'bg-purple-50 text-purple-700 border-purple-200' },
       footer_ucsur: { label: 'Pie UC Sur', shortLabel: 'Pie', icon: 'fa-solid fa-id-card', badgeColor: 'bg-red-600 text-white border-red-700' }
     };
 
-    // isCollapsed = false para bloques recién creados, true para bloques de plantilla o correo base
     function createBlockFromDefaults(type, isCollapsed) {
       const collapsedState = (isCollapsed !== undefined) ? Boolean(isCollapsed) : false;
       const base = { id: generateId(), type: type, visible: true, collapsed: collapsedState };
@@ -920,6 +1005,7 @@
         textAlign: userSettings.richtext.textAlign,
         html: userSettings.richtext.initialHtml
       });
+      if (type === 'convocatoria') return Object.assign({}, base, userSettings.convocatoria);
       if (type === 'callout') return Object.assign({}, base, userSettings.callout);
       if (type === 'button') return Object.assign({}, base, userSettings.button);
       if (type === 'closing') return Object.assign({}, base, userSettings.closing);
@@ -935,20 +1021,68 @@
         .replace(/"/g, '&quot;');
     }
 
-    // Construye la ruta EDES válida para CCOO
+    function buildGoogleMapsUrl(addressQuery) {
+      const clean = String(addressQuery || '').trim();
+      if (!clean) return '#';
+      return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(clean);
+    }
+
     function buildEdesSrcString(rawEdesInput) {
       const clean = String(rawEdesInput || '').trim();
       if (!clean) return '';
       if (clean.indexOf('edes.php') === 0 || clean.indexOf('http://') === 0 || clean.indexOf('https://') === 0) {
         return clean;
       }
-      // Si solo pone el número o nombre sin extensión (ej: 19139), añade .png
       const filePart = /\.[a-zA-Z0-9]{2,5}$/.test(clean) ? clean : (clean + '.png');
       let pattern = (userSettings.general && userSettings.general.edesPattern) ? userSettings.general.edesPattern.trim() : 'edes.php?R://co/cotplimg/{ID}';
       if (!pattern || pattern === '[EDES:{ID}]') {
         pattern = 'edes.php?R://co/cotplimg/{ID}';
       }
       return pattern.indexOf('{ID}') !== -1 ? pattern.replace('{ID}', filePart) : (pattern + filePart);
+    }
+
+    // Mostrar u ocultar zona de papelera al arrastrar un bloque existente
+    function toggleTrashZoneVisibility(show) {
+      const trashZone = document.getElementById('timelineTrashZone');
+      if (!trashZone) return;
+      if (show) {
+        trashZone.classList.remove('hidden');
+      } else {
+        trashZone.classList.add('hidden');
+        trashZone.classList.remove('drag-active-hover');
+      }
+    }
+
+    function initTrashZoneEvents() {
+      const trashZone = document.getElementById('timelineTrashZone');
+      if (!trashZone) return;
+
+      trashZone.addEventListener('dragover', (e) => {
+        if (dragPayload && dragPayload.mode === 'reorder') {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          trashZone.classList.add('drag-active-hover');
+        }
+      });
+
+      trashZone.addEventListener('dragleave', () => {
+        trashZone.classList.remove('drag-active-hover');
+      });
+
+      trashZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        trashZone.classList.remove('drag-active-hover');
+        if (dragPayload && dragPayload.mode === 'reorder' && typeof dragPayload.fromIndex === 'number') {
+          const delIdx = dragPayload.fromIndex;
+          const removed = blocksState.splice(delIdx, 1)[0];
+          dragPayload = null;
+          toggleTrashZoneVisibility(false);
+          renderAllBlocksUI();
+          const label = (removed && BLOCK_META[removed.type]) ? BLOCK_META[removed.type].label : 'Bloque';
+          showToast('Bloque eliminado', label + ' borrado en la papelera.');
+        }
+      });
     }
 
     function sanitizeAndStyleRichText(rawHtml, fontSize, textAlign) {
@@ -988,7 +1122,6 @@
       return tempDiv.innerHTML;
     }
 
-    // isPreviewMode = true permite mostrar una tarjeta visual cuando se usa una ruta relativa edes.php que solo existe dentro de la intranet de CCOO
     function renderSingleBlockToEmailHtml(blk, isPreviewMode) {
       if (!blk || !blk.visible) return '';
 
@@ -1011,7 +1144,6 @@
         const link = (blk.linkUrl || '').trim();
         const align = blk.align || 'center';
         
-        // Compatibilidad con campo antiguo maxWidth o nuevo widthPx
         let widthNum = parseInt(blk.widthPx || blk.maxWidth || '300', 10);
         if (isNaN(widthNum) || String(blk.maxWidth) === '100%' || widthNum > 800) {
           widthNum = 600;
@@ -1031,13 +1163,11 @@
         if (!finalSrc) {
           innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + widthNum + 'px; background:#fff1f2; border:2px dashed #fda4af; padding:22px 14px; border-radius:6px; color:#9f1239; font-weight:bold; font-size:12px; text-align:center; box-sizing:border-box;">[ Bloque de Imagen: Introduce el ID de EDES o la URL ]</div>';
         } else if (isPreviewMode && method === 'edes' && finalSrc.indexOf('edes.php') === 0 && !directUrl) {
-          // En la vista previa fuera de la intranet de CCOO, edes.php no resuelve salvo que haya URL auxiliar, mostramos recuadro representativo con el código exacto
           innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + widthNum + 'px; background:#f8fafc; border:2px dashed #cbd5e1; padding:22px 14px; border-radius:6px; color:#334155; font-family:Arial,sans-serif; text-align:center; box-sizing:border-box;">' +
             '<div style="color:#CC0000; font-weight:bold; font-size:13px; margin-bottom:4px;">Imagen EDES CCOO: ' + alt + '</div>' +
             '<div style="font-family:monospace; font-size:11px; color:#64748b; word-break:break-all;">src="' + escapeHtml(finalSrc) + '" (width=' + widthNum + ')</div>' +
             '</div>';
         } else {
-          // Si estamos en previsualización y el usuario puso tanto ID de EDES como URL auxiliar, usamos la URL para previsualizar, pero en el HTML final usamos finalSrc (EDES)
           const srcToRender = (isPreviewMode && method === 'edes' && directUrl) ? directUrl : finalSrc;
           const mceAttr = (method === 'edes') ? ' _mce_src="' + escapeHtml(finalSrc) + '"' : '';
           const marginAlign = align === 'center' ? 'margin: 0 auto;' : (align === 'right' ? 'margin: 0 0 0 auto;' : 'margin: 0;');
@@ -1057,6 +1187,73 @@
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 0 0 10px 0;">' +
           '<tr><td style="font-family: Arial, Helvetica, sans-serif;">' +
           sanitizeAndStyleRichText(blk.html, blk.fontSize, blk.textAlign) +
+          '</td></tr></table>';
+      }
+
+      if (blk.type === 'convocatoria') {
+        const theme = blk.theme || 'red';
+        const title = escapeHtml((blk.title || '').trim());
+        const dateText = escapeHtml((blk.dateText || '').trim());
+        const timeText = escapeHtml((blk.timeText || '').trim());
+        const placeText = escapeHtml((blk.placeText || '').trim());
+        const rawAddress = (blk.addressText || '').trim();
+        const addressText = escapeHtml(rawAddress);
+        const useMaps = blk.linkMaps !== false;
+        
+        // Procesar intervinientes (uno o varios por salto de línea, o vacío)
+        const rawSpeakers = (blk.speakersText || '').trim();
+        const speakerLines = rawSpeakers
+          .split('\n')
+          .map(s => s.trim())
+          .filter(Boolean);
+
+        let addressHtml = addressText;
+        if (rawAddress && useMaps) {
+          const mapsUrl = buildGoogleMapsUrl(rawAddress);
+          addressHtml = '<a href="' + escapeHtml(mapsUrl) + '" target="_blank" style="color: #CC0000; text-decoration: underline; font-weight: bold;">' + addressText + ' (Ver en Google Maps)</a>';
+        }
+
+        const detailRows = [];
+        if (dateText) {
+          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Fecha:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222; font-weight: bold;">' + dateText + '</td></tr>');
+        }
+        if (timeText) {
+          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Hora:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222; font-weight: bold;">' + timeText + '</td></tr>');
+        }
+        if (placeText) {
+          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Lugar:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222;"><strong>' + placeText + '</strong></td></tr>');
+        }
+        if (addressText) {
+          detailRows.push('<tr><td valign="top" width="95" style="padding: 5px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap;">Dirección:</td><td valign="top" style="padding: 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #222222;">' + addressHtml + '</td></tr>');
+        }
+        if (speakerLines.length > 0) {
+          const speakerLabel = speakerLines.length === 1 ? 'Interviene:' : 'Intervienen:';
+          const formattedSpeakers = speakerLines.length === 1
+            ? escapeHtml(speakerLines[0])
+            : speakerLines.map(sp => '&bull; ' + escapeHtml(sp)).join('<br>');
+          detailRows.push('<tr><td valign="top" width="95" style="padding: 8px 8px 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; color: #CC0000; white-space: nowrap; border-top: 1px solid #f1dada;">' + speakerLabel + '</td><td valign="top" style="padding: 8px 0 5px 0; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 20px; color: #222222; border-top: 1px solid #f1dada;">' + formattedSpeakers + '</td></tr>');
+        }
+
+        if (theme === 'clean') {
+          return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #fdf5f5; border: 1px solid #f5d0d0; border-left: 5px solid #CC0000; border-radius: 4px; margin: 18px 0 22px 0;">' +
+            '<tr><td style="padding: 18px 20px; font-family: Arial, Helvetica, sans-serif;">' +
+            '<p style="margin: 0 0 4px 0; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #CC0000;">Convocatoria</p>' +
+            (title ? '<h2 style="margin: 0 0 14px 0; font-size: 20px; line-height: 25px; color: #111111; font-weight: bold; font-family: Arial, Helvetica, sans-serif;">' + title + '</h2>' : '') +
+            '<table width="100%" border="0" cellspacing="0" cellpadding="0">' + detailRows.join('') + '</table>' +
+            '</td></tr></table>';
+        }
+
+        const headerBg = theme === 'dark' ? '#1e293b' : '#CC0000';
+        const boxBorder = theme === 'dark' ? '#cbd5e1' : '#f1c1c1';
+        const boxBg = theme === 'dark' ? '#f8fafc' : '#fffafb';
+
+        return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: ' + boxBg + '; border: 1px solid ' + boxBorder + '; border-radius: 6px; overflow: hidden; margin: 18px 0 22px 0;">' +
+          '<tr><td bgcolor="' + headerBg + '" style="background-color: ' + headerBg + '; padding: 12px 18px; font-family: Arial, Helvetica, sans-serif;">' +
+          '<span style="display: block; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.2px; color: #ffcccc; margin-bottom: 2px;">Convocatoria</span>' +
+          (title ? '<strong style="display: block; font-size: 19px; line-height: 24px; color: #ffffff; font-family: Arial, Helvetica, sans-serif;">' + title + '</strong>' : '') +
+          '</td></tr>' +
+          '<tr><td style="padding: 16px 18px; font-family: Arial, Helvetica, sans-serif;">' +
+          '<table width="100%" border="0" cellspacing="0" cellpadding="0">' + detailRows.join('') + '</table>' +
           '</td></tr></table>';
       }
 
@@ -1134,14 +1331,20 @@
           (handleText ? '<td valign="middle" style="padding-left: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 11.5px; font-weight: bold; color: #CC0000; white-space: nowrap;">' + handleText + '</td>' : '') +
           '</tr></table></td></tr>' : '';
 
+        const addr1 = (blk.addressLine1 || 'San José de Calasanz, 22').trim();
+        const addr2 = (blk.addressLine2 || '28902 Getafe (Madrid)').trim();
+        const footerMapsUrl = buildGoogleMapsUrl(addr1 + ', ' + addr2);
+
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 24px; padding-top: 16px; border-top: 2px solid #e5e7eb; background-color: #ffffff;">' +
           '<tr><td align="center">' +
           '<table border="0" cellspacing="0" cellpadding="0" align="center">' +
           '<tr>' +
           '<td valign="middle" style="padding-right: 12px; width: 105px; min-width: 105px;">' + logoImg + '</td>' +
           '<td valign="middle" align="left" style="font-family: Arial, Helvetica, sans-serif; font-size: 11.5px; line-height: 17px; color: #222222; text-align: left;">' +
-          '<span style="display:block;">' + escapeHtml(blk.addressLine1 || 'San José de Calasanz, 22') + '</span>' +
-          '<span style="display:block;">' + escapeHtml(blk.addressLine2 || '28902 Getafe (Madrid)') + '</span>' +
+          '<a href="' + escapeHtml(footerMapsUrl) + '" target="_blank" style="color: #222222; text-decoration: none;">' +
+          '<span style="display:block;">' + escapeHtml(addr1) + '</span>' +
+          '<span style="display:block;">' + escapeHtml(addr2) + '</span>' +
+          '</a>' +
           (blk.phone ? '<span style="display:block; margin-top: 2px;"><strong>Tfno:</strong> ' + escapeHtml(blk.phone) + '</span>' : '') +
           (blk.email ? '<span style="display:block; margin-top: 2px;"><strong>Email:</strong> <a href="mailto:' + escapeHtml(blk.email) + '" style="color:#111111; text-decoration:none;">' + escapeHtml(blk.email) + '</a></span>' : '') +
           '</td></tr></table>' +
@@ -1182,7 +1385,7 @@
     }
 
     function saveLocalWorkingState() {
-      try { localStorage.setItem('ccoo_working_blocks_v5', JSON.stringify(blocksState)); } catch (e) {}
+      try { localStorage.setItem('ccoo_working_blocks_v6', JSON.stringify(blocksState)); } catch (e) {}
     }
 
     // SINCRONIZACIÓN GOOGLE DRIVE / LOCAL
@@ -1212,6 +1415,9 @@
         if (data && data.templates) cloudDrafts = data.templates;
         if (data && data.settings && Object.keys(data.settings).length > 0) {
           userSettings = Object.assign({}, DEFAULT_CONFIG, data.settings);
+          if (!userSettings.convocatoria) {
+            userSettings.convocatoria = JSON.parse(JSON.stringify(DEFAULT_CONFIG.convocatoria));
+          }
           if (!userSettings.general.edesPattern || userSettings.general.edesPattern === '[EDES:{ID}]') {
             userSettings.general.edesPattern = 'edes.php?R://co/cotplimg/{ID}';
           }
@@ -1263,7 +1469,7 @@
       tlContainer.innerHTML = blocksState.map((blk, idx) => {
         const meta = BLOCK_META[blk.type] || { shortLabel: blk.type, icon: 'fa-solid fa-cube' };
         const stateClasses = (blk.collapsed ? 'is-collapsed ' : '') + (!blk.visible ? 'is-hidden-email ' : '');
-        return '<div class="timeline-item ' + stateClasses + '" draggable="true" data-tl-index="' + idx + '" title="Bloque ' + (idx + 1) + ': ' + meta.label + ' (Clic para editar · Arrastra para mover)">' +
+        return '<div class="timeline-item ' + stateClasses + '" draggable="true" data-tl-index="' + idx + '" title="Bloque ' + (idx + 1) + ': ' + meta.label + ' (Clic para editar · Arrastra para mover o borrar)">' +
           '<span class="w-4 h-4 rounded-full bg-[#CC0000] text-white text-[10px] font-bold inline-flex items-center justify-center shrink-0">' + (idx + 1) + '</span>' +
           '<i class="' + meta.icon + ' text-xs text-slate-600 shrink-0"></i>' +
           '<span class="text-[11px] font-semibold truncate">' + meta.shortLabel + '</span>' +
@@ -1274,7 +1480,6 @@
       items.forEach(item => {
         const idx = parseInt(item.getAttribute('data-tl-index'), 10);
 
-        // Clic en línea de tiempo: despliega ese bloque y hace scroll hasta él
         item.addEventListener('click', () => {
           const targetBlk = blocksState[idx];
           if (!targetBlk) return;
@@ -1291,12 +1496,12 @@
           }
         });
 
-        // Drag start desde la línea de tiempo
         item.addEventListener('dragstart', (e) => {
           dragPayload = { mode: 'reorder', fromIndex: idx };
           e.dataTransfer.effectAllowed = 'move';
           e.dataTransfer.setData('text/plain', String(idx));
           item.classList.add('opacity-50');
+          toggleTrashZoneVisibility(true);
         });
 
         item.addEventListener('dragend', () => {
@@ -1304,6 +1509,7 @@
           tlContainer.querySelectorAll('.timeline-item').forEach(el => {
             el.classList.remove('tl-drag-left', 'tl-drag-right');
           });
+          toggleTrashZoneVisibility(false);
           dragPayload = null;
         });
 
@@ -1326,6 +1532,7 @@
           const rect = item.getBoundingClientRect();
           const isAfter = (e.clientX - rect.left) > (rect.width / 2);
           item.classList.remove('tl-drag-left', 'tl-drag-right');
+          toggleTrashZoneVisibility(false);
 
           if (!dragPayload) return;
 
@@ -1456,6 +1663,49 @@
           '</div>';
       }
 
+      if (blk.type === 'convocatoria') {
+        const theme = blk.theme || 'red';
+        return '<div class="space-y-3">' +
+          '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
+          '<div class="sm:col-span-2">' +
+          '<label for="' + pfx + 'title" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">1. Título de la Convocatoria</label>' +
+          '<input type="text" id="' + pfx + 'title" name="title" data-field="title" value="' + escapeHtml(blk.title) + '" placeholder="Ej: Asamblea de delegados y delegadas" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'theme" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Diseño visual</label>' +
+          '<select id="' + pfx + 'theme" name="theme" data-field="theme" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<option value="red" ' + (theme === 'red' ? 'selected' : '') + '>Cabecera Roja CCOO</option>' +
+          '<option value="dark" ' + (theme === 'dark' ? 'selected' : '') + '>Cabecera Oscura</option>' +
+          '<option value="clean" ' + (theme === 'clean' ? 'selected' : '') + '>Borde Lateral Rojo</option>' +
+          '</select></div></div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div>' +
+          '<label for="' + pfx + 'dateText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">2. Fecha</label>' +
+          '<input type="text" id="' + pfx + 'dateText" name="dateText" data-field="dateText" value="' + escapeHtml(blk.dateText) + '" placeholder="Ej: 29 de septiembre" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'timeText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">3. Hora</label>' +
+          '<input type="text" id="' + pfx + 'timeText" name="timeText" data-field="timeText" value="' + escapeHtml(blk.timeText) + '" placeholder="Ej: 18:30 horas" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '</div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div>' +
+          '<label for="' + pfx + 'placeText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">4. Lugar</label>' +
+          '<input type="text" id="' + pfx + 'placeText" name="placeText" data-field="placeText" value="' + escapeHtml(blk.placeText) + '" placeholder="Ej: Sede de CCOO en Getafe" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'addressText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">5. Dirección (enlaza a Google Maps)</label>' +
+          '<input type="text" id="' + pfx + 'addressText" name="addressText" data-field="addressText" value="' + escapeHtml(blk.addressText) + '" placeholder="Ej: C/ San José de Calasanz, 22, Getafe" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '</div>' +
+          '<div>' +
+          '<div class="flex items-center justify-between mb-1">' +
+          '<label for="' + pfx + 'speakersText" class="block text-[11px] font-bold text-slate-600 uppercase">6. Intervienen (opcional · una persona por línea)</label>' +
+          '<span class="text-[10px] text-slate-400">Déjalo vacío si no procede</span></div>' +
+          '<textarea id="' + pfx + 'speakersText" name="speakersText" rows="2" data-field="speakersText" placeholder="Ej: Ángela Hernández - Secretaria General de la Comarca Sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">' + escapeHtml(blk.speakersText) + '</textarea>' +
+          '</div>' +
+          '<div class="pt-1">' +
+          '<label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">' +
+          '<input type="checkbox" name="linkMaps" data-field-bool="linkMaps" ' + (blk.linkMaps !== false ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span>Incluir enlace interactivo a Google Maps en la dirección</span></label>' +
+          '</div></div>';
+      }
+
       if (blk.type === 'callout') {
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
@@ -1520,7 +1770,7 @@
       if (blk.type === 'footer_ucsur') {
         return '<div class="space-y-4">' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
-          '<div><label for="' + pfx + 'addr1" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Dirección (Línea 1)</label><input type="text" id="' + pfx + 'addr1" name="addressLine1" data-field="addressLine1" value="' + escapeHtml(blk.addressLine1) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div><label for="' + pfx + 'addr1" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Dirección (Línea 1 · enlaza a Maps)</label><input type="text" id="' + pfx + 'addr1" name="addressLine1" data-field="addressLine1" value="' + escapeHtml(blk.addressLine1) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
           '<div><label for="' + pfx + 'addr2" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">CP y Municipio (Línea 2)</label><input type="text" id="' + pfx + 'addr2" name="addressLine2" data-field="addressLine2" value="' + escapeHtml(blk.addressLine2) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
@@ -1568,6 +1818,7 @@
       if (blk.type === 'header') return blk.title || blk.kicker || '';
       if (blk.type === 'image') return (blk.method === 'edes' ? ('EDES: ' + (blk.edesId || 'sin ID')) : (blk.imageUrl || 'sin URL'));
       if (blk.type === 'richtext') return (blk.html || '').replace(/<[^>]+>/g, ' ').trim().slice(0, 48);
+      if (blk.type === 'convocatoria') return (blk.title || '') + (blk.dateText ? ' · ' + blk.dateText : '');
       if (blk.type === 'callout') return blk.title || blk.text || '';
       if (blk.type === 'button') return blk.btnText || '';
       if (blk.type === 'closing') return blk.closingLine || '';
@@ -1595,7 +1846,7 @@
         return '<div id="block-card-' + blk.id + '" class="block-card bg-white rounded-xl shadow-xs border ' + (blk.visible ? 'border-slate-200' : 'border-slate-200 opacity-55') + ' overflow-hidden" data-index="' + idx + '" draggable="true">' +
           '<div class="card-header-bar bg-slate-50/90 border-b border-slate-200 px-3.5 py-2 flex items-center justify-between gap-2 select-none cursor-pointer">' +
           '<div class="flex items-center gap-2 min-w-0 flex-1">' +
-          '<span class="drag-handle cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 px-1" title="Arrastrar para mover"><i class="fa-solid fa-grip-vertical"></i></span>' +
+          '<span class="drag-handle cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 px-1" title="Arrastrar para mover o llevar a la papelera"><i class="fa-solid fa-grip-vertical"></i></span>' +
           '<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[11px] font-bold inline-flex items-center justify-center shrink-0">' + (idx + 1) + '</span>' +
           '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold border ' + meta.badgeColor + ' shrink-0">' +
           '<i class="' + meta.icon + '"></i><span>' + meta.label + '</span></span>' +
@@ -1626,7 +1877,6 @@
         const blk = blocksState[idx];
         if (!blk) return;
 
-        // Clic en la barra superior del bloque para contraer/desplegar rápidamente
         const headerBar = card.querySelector('.card-header-bar');
         if (headerBar) {
           headerBar.addEventListener('click', (e) => {
@@ -1636,7 +1886,6 @@
           });
         }
 
-        // Evitar que al seleccionar texto dentro de un input se dispare el drag de la tarjeta
         card.addEventListener('mousedown', (e) => {
           const isInput = e.target.closest('input, textarea, select, [contenteditable="true"]');
           card.setAttribute('draggable', isInput ? 'false' : 'true');
@@ -1651,6 +1900,7 @@
           e.dataTransfer.effectAllowed = 'move';
           e.dataTransfer.setData('text/plain', String(idx));
           card.classList.add('dragging');
+          toggleTrashZoneVisibility(true);
         });
 
         card.addEventListener('dragend', () => {
@@ -1658,6 +1908,7 @@
           document.querySelectorAll('.block-card').forEach(c => {
             c.classList.remove('drag-over-top', 'drag-over-bottom');
           });
+          toggleTrashZoneVisibility(false);
           dragPayload = null;
         });
 
@@ -1680,6 +1931,7 @@
           const rect = card.getBoundingClientRect();
           const isAfter = (e.clientY - rect.top) > (rect.height / 2);
           card.classList.remove('drag-over-top', 'drag-over-bottom');
+          toggleTrashZoneVisibility(false);
 
           if (!dragPayload) return;
 
@@ -1796,7 +2048,7 @@
       });
     }
 
-    // BOTONES DE AÑADIR BLOQUE (SOPORTAN CLIC Y ARRASTRE HACIA LA LÍNEA DE TIEMPO)
+    // BOTONES DE AÑADIR BLOQUE
     document.querySelectorAll('.add-block-btn').forEach(btn => {
       const type = btn.getAttribute('data-add-type');
 
@@ -1811,7 +2063,7 @@
       });
 
       btn.addEventListener('click', () => {
-        const newBlk = createBlockFromDefaults(type, false); // Nuevo bloque aparece desplegado
+        const newBlk = createBlockFromDefaults(type, false);
         const lastIdx = blocksState.length - 1;
         if (type !== 'footer_ucsur' && lastIdx >= 0 && blocksState[lastIdx].type === 'footer_ucsur') {
           blocksState.splice(lastIdx, 0, newBlk);
@@ -1838,7 +2090,7 @@
       renderAllBlocksUI();
     });
 
-    // NUEVO CORREO: TODOS LOS BLOQUES PREDEFINIDOS APARECEN CONTRAÍDOS
+    // NUEVO CORREO: BLOQUES PREDEFINIDOS APARECEN CONTRAÍDOS
     document.getElementById('btnNewEmail').addEventListener('click', () => {
       if (confirm('¿Deseas iniciar un correo limpio con la estructura base de CCOO?')) {
         blocksState = [
@@ -1878,6 +2130,9 @@
     });
 
     function populateSettingsInputs() {
+      if (!userSettings.convocatoria) {
+        userSettings.convocatoria = JSON.parse(JSON.stringify(DEFAULT_CONFIG.convocatoria));
+      }
       // General
       document.getElementById('cfgGeneral_desktopMaxWidth').value = userSettings.general.desktopMaxWidth || '800px';
       document.getElementById('cfgGeneral_edesPattern').value = userSettings.general.edesPattern || 'edes.php?R://co/cotplimg/{ID}';
@@ -1897,6 +2152,15 @@
       document.getElementById('cfgRichText_fontSize').value = userSettings.richtext.fontSize || '15px';
       document.getElementById('cfgRichText_textAlign').value = userSettings.richtext.textAlign || 'left';
       document.getElementById('cfgRichText_initialHtml').value = userSettings.richtext.initialHtml || '';
+      // Convocatoria
+      document.getElementById('cfgConvocatoria_title').value = userSettings.convocatoria.title || '';
+      document.getElementById('cfgConvocatoria_theme').value = userSettings.convocatoria.theme || 'red';
+      document.getElementById('cfgConvocatoria_dateText').value = userSettings.convocatoria.dateText || '';
+      document.getElementById('cfgConvocatoria_timeText').value = userSettings.convocatoria.timeText || '';
+      document.getElementById('cfgConvocatoria_placeText').value = userSettings.convocatoria.placeText || '';
+      document.getElementById('cfgConvocatoria_addressText').value = userSettings.convocatoria.addressText || '';
+      document.getElementById('cfgConvocatoria_speakersText').value = userSettings.convocatoria.speakersText || '';
+      document.getElementById('cfgConvocatoria_linkMaps').checked = userSettings.convocatoria.linkMaps !== false;
       // Callout
       document.getElementById('cfgCallout_title').value = userSettings.callout.title || '';
       document.getElementById('cfgCallout_theme').value = userSettings.callout.theme || 'red';
@@ -1947,6 +2211,14 @@
       userSettings.richtext.fontSize = document.getElementById('cfgRichText_fontSize').value;
       userSettings.richtext.textAlign = document.getElementById('cfgRichText_textAlign').value;
       userSettings.richtext.initialHtml = document.getElementById('cfgRichText_initialHtml').value;
+      userSettings.convocatoria.title = document.getElementById('cfgConvocatoria_title').value;
+      userSettings.convocatoria.theme = document.getElementById('cfgConvocatoria_theme').value;
+      userSettings.convocatoria.dateText = document.getElementById('cfgConvocatoria_dateText').value;
+      userSettings.convocatoria.timeText = document.getElementById('cfgConvocatoria_timeText').value;
+      userSettings.convocatoria.placeText = document.getElementById('cfgConvocatoria_placeText').value;
+      userSettings.convocatoria.addressText = document.getElementById('cfgConvocatoria_addressText').value;
+      userSettings.convocatoria.speakersText = document.getElementById('cfgConvocatoria_speakersText').value;
+      userSettings.convocatoria.linkMaps = document.getElementById('cfgConvocatoria_linkMaps').checked;
       userSettings.callout.title = document.getElementById('cfgCallout_title').value;
       userSettings.callout.theme = document.getElementById('cfgCallout_theme').value;
       userSettings.callout.text = document.getElementById('cfgCallout_text').value;
@@ -2005,6 +2277,10 @@
           blk.rounded = userSettings.image.rounded;
           blk.method = userSettings.image.method;
         }
+        if (blk.type === 'convocatoria') {
+          blk.theme = userSettings.convocatoria.theme;
+          blk.linkMaps = userSettings.convocatoria.linkMaps;
+        }
         if (blk.type === 'button') {
           blk.style = userSettings.button.style;
           blk.align = userSettings.button.align;
@@ -2033,7 +2309,7 @@
       }
     });
 
-    // BIBLIOTECA DE PLANTILLAS (AL CARGAR UNA PLANTILLA, SUS BLOQUES APARECEN CONTRAÍDOS)
+    // BIBLIOTECA DE PLANTILLAS
     const draftsModal = document.getElementById('draftsModal');
     const draftsList = document.getElementById('draftsList');
     const inputDraftName = document.getElementById('inputDraftName');
@@ -2103,7 +2379,7 @@
             blocksState = JSON.parse(JSON.stringify(cloudDrafts[idx].blocks));
             blocksState.forEach(blk => {
               blk.id = generateId();
-              blk.collapsed = true; // Aparecen contraídos al cargar plantilla
+              blk.collapsed = true;
             });
             renderAllBlocksUI();
             draftsModal.classList.add('hidden');
@@ -2195,10 +2471,11 @@
       setTimeout(() => toastEl.classList.add('translate-y-20', 'opacity-0'), 3000);
     }
 
-    // INICIALIZACIÓN (AL ARRANCAR, TODOS LOS BLOQUES PREDEFINIDOS APARECEN CONTRAÍDOS)
+    // INICIALIZACIÓN
     window.addEventListener('DOMContentLoaded', async () => {
+      initTrashZoneEvents();
       try {
-        const saved = localStorage.getItem('ccoo_working_blocks_v5');
+        const saved = localStorage.getItem('ccoo_working_blocks_v6');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
