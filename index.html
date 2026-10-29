@@ -30,17 +30,86 @@
     .wysiwyg-area ol { list-style-type: decimal; margin: 0 0 14px 0; padding-left: 24px; }
     .wysiwyg-area li { margin-bottom: 6px; }
     .wysiwyg-area a { color: #CC0000; text-decoration: underline; font-weight: bold; }
+    
     .block-card {
-      transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      scroll-margin-top: 230px;
     }
     .block-card.dragging {
-      opacity: 0.55;
+      opacity: 0.45;
       border-color: #CC0000;
       box-shadow: 0 10px 25px -5px rgba(204, 0, 0, 0.15);
     }
-    .block-card.drag-over {
-      border-top: 3px solid #CC0000;
+    .block-card.drag-over-top {
+      border-top: 3px solid #CC0000 !important;
     }
+    .block-card.drag-over-bottom {
+      border-bottom: 3px solid #CC0000 !important;
+    }
+    @keyframes pulseHighlight {
+      0% { box-shadow: 0 0 0 0 rgba(204, 0, 0, 0.5); border-color: #CC0000; }
+      70% { box-shadow: 0 0 0 8px rgba(204, 0, 0, 0); border-color: #CC0000; }
+      100% { box-shadow: 0 0 0 0 rgba(204, 0, 0, 0); }
+    }
+    .highlight-pulse {
+      animation: pulseHighlight 1.2s ease-out;
+    }
+
+    /* Línea de tiempo horizontal adaptable */
+    .timeline-track {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      height: 46px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+      user-select: none;
+      overflow: hidden;
+    }
+    .timeline-item {
+      flex: 1 1 0%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      padding: 0 6px;
+      cursor: grab;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .timeline-item:hover {
+      border-color: #CC0000;
+      background: #fff5f5;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    }
+    .timeline-item:active {
+      cursor: grabbing;
+    }
+    .timeline-item.is-collapsed {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .timeline-item.is-hidden-email {
+      opacity: 0.45;
+      border-style: dashed;
+    }
+    .timeline-item.tl-drag-left {
+      border-left: 4px solid #CC0000 !important;
+      padding-left: 3px;
+    }
+    .timeline-item.tl-drag-right {
+      border-right: 4px solid #CC0000 !important;
+      padding-right: 3px;
+    }
+
     /* Chasis de Teléfono Móvil sin desbordamiento */
     .mobile-phone-frame {
       width: 375px;
@@ -133,7 +202,7 @@
             </span>
           </h1>
           <p class="text-[11px] text-slate-500 hidden md:block">
-            Generador de código compatible con gestor de envíos de CCOO y almacenamiento centralizado en Google Drive
+            Generador de código compatible con gestor de envíos EDES de CCOO y almacenamiento en Google Drive
           </p>
         </div>
       </div>
@@ -171,54 +240,78 @@
   <!-- CONTENEDOR PRINCIPAL -->
   <main class="max-w-[1700px] w-full mx-auto px-4 py-4 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-    <!-- COLUMNA IZQUIERDA: BLOQUES -->
+    <!-- COLUMNA IZQUIERDA: CONSTRUCTOR Y LÍNEA DE TIEMPO -->
     <section class="lg:col-span-6 space-y-4">
-      <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-3.5 sticky top-[62px] z-20">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-            <i class="fa-solid fa-plus-circle text-[#CC0000]"></i>
-            Insertar nuevo bloque al correo:
-          </span>
-          <span id="blockCounterLabel" class="text-[11px] font-semibold text-slate-400">0 bloques activos</span>
+      <!-- PANEL STICKY SUPERIOR: INSERTAR + LÍNEA DE TIEMPO -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3.5 sticky top-[58px] z-20 space-y-3">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-plus-circle text-[#CC0000]"></i>
+              Pulsa o arrastra un bloque hacia la línea de tiempo:
+            </span>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btnExpandAllBlocks" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800" title="Mostrar el interior de todos los bloques">
+                <i class="fa-regular fa-eye mr-0.5"></i>Mostrar todos
+              </button>
+              <span class="text-slate-300">|</span>
+              <button type="button" id="btnCollapseAllBlocks" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800" title="Ocultar el interior de todos los bloques">
+                <i class="fa-regular fa-eye-slash mr-0.5"></i>Contraer todos
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-1.5">
+            <button type="button" draggable="true" data-add-type="header" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-heading text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
+              <span class="text-[11px] font-semibold leading-tight text-center">Titular</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="image" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
+              <i class="fa-regular fa-image text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
+              <span class="text-[11px] font-semibold leading-tight text-center">Cartel / Img</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="richtext" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-align-left text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
+              <span class="text-[11px] font-semibold leading-tight text-center">Texto Rico</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="callout" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-quote-left text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
+              <span class="text-[11px] font-semibold leading-tight text-center">Destacado</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="button" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-hand-pointer text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
+              <span class="text-[11px] font-semibold leading-tight text-center">Botón CTA</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="closing" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-signature text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
+              <span class="text-[11px] font-semibold leading-tight text-center">Lema Cierre</span>
+            </button>
+            <button type="button" draggable="true" data-add-type="footer_ucsur" class="add-block-btn cursor-grab active:cursor-grabbing flex flex-col items-center justify-center p-2 rounded-lg border border-red-200 bg-red-50/30 hover:border-[#CC0000] hover:bg-red-50 text-slate-800 hover:text-[#CC0000] transition group">
+              <i class="fa-solid fa-id-card text-sm mb-1 text-[#CC0000]"></i>
+              <span class="text-[11px] font-bold leading-tight text-center">Pie UC Sur</span>
+            </button>
+          </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-1.5">
-          <button type="button" data-add-type="header" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
-            <i class="fa-solid fa-heading text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
-            <span class="text-[11px] font-semibold leading-tight text-center">Titular</span>
-          </button>
-          <button type="button" data-add-type="image" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
-            <i class="fa-regular fa-image text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
-            <span class="text-[11px] font-semibold leading-tight text-center">Cartel / Img</span>
-          </button>
-          <button type="button" data-add-type="richtext" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
-            <i class="fa-solid fa-align-left text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
-            <span class="text-[11px] font-semibold leading-tight text-center">Texto Rico</span>
-          </button>
-          <button type="button" data-add-type="callout" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
-            <i class="fa-solid fa-quote-left text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
-            <span class="text-[11px] font-semibold leading-tight text-center">Destacado</span>
-          </button>
-          <button type="button" data-add-type="button" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
-            <i class="fa-solid fa-hand-pointer text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
-            <span class="text-[11px] font-semibold leading-tight text-center">Botón CTA</span>
-          </button>
-          <button type="button" data-add-type="closing" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 hover:border-[#CC0000] hover:bg-red-50/50 text-slate-700 hover:text-[#CC0000] transition group">
-            <i class="fa-solid fa-signature text-sm mb-1 text-slate-500 group-hover:text-[#CC0000]"></i>
-            <span class="text-[11px] font-semibold leading-tight text-center">Lema Cierre</span>
-          </button>
-          <button type="button" data-add-type="footer_ucsur" class="add-block-btn flex flex-col items-center justify-center p-2 rounded-lg border border-red-200 bg-red-50/30 hover:border-[#CC0000] hover:bg-red-50 text-slate-800 hover:text-[#CC0000] transition group">
-            <i class="fa-solid fa-id-card text-sm mb-1 text-[#CC0000]"></i>
-            <span class="text-[11px] font-bold leading-tight text-center">Pie UC Sur</span>
-          </button>
+        <!-- LÍNEA DE TIEMPO HORIZONTAL -->
+        <div class="pt-2 border-t border-slate-200">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+              <i class="fa-solid fa-timeline text-[#CC0000]"></i>
+              Línea de tiempo del correo <span class="font-normal text-slate-400">(clic para ir al bloque · arrastra para ordenar o insertar)</span>
+            </span>
+            <span id="blockCounterLabel" class="text-[11px] font-semibold text-slate-500">0 bloques</span>
+          </div>
+          <div id="timelineContainer" class="timeline-track"></div>
         </div>
       </div>
 
-      <div id="blocksListContainer" class="space-y-3.5 pb-10"></div>
+      <!-- LISTA DE BLOQUES -->
+      <div id="blocksListContainer" class="space-y-3 pb-12"></div>
     </section>
 
     <!-- COLUMNA DERECHA: PREVISUALIZACIÓN -->
-    <section class="lg:col-span-6 flex flex-col sticky top-[62px]">
+    <section class="lg:col-span-6 flex flex-col sticky top-[58px]">
       <div class="bg-white rounded-xl shadow-xs border border-slate-200 flex flex-col overflow-hidden">
         <div class="bg-slate-50 border-b border-slate-200 px-4 py-2 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center bg-slate-200/80 p-1 rounded-lg">
@@ -241,7 +334,7 @@
         <div class="bg-red-50/70 border-b border-red-100 px-4 py-1.5 flex items-center justify-between text-xs text-red-950">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-circle-check text-[#CC0000]"></i>
-            <span><strong>Listo para CCOO:</strong> Copia el HTML, pulsa el icono <strong>HTML / Fuente</strong> del gestor de envíos y pégalo.</span>
+            <span><strong>Listo para CCOO:</strong> Copia el HTML, pulsa el icono <strong>HTML</strong> del gestor de envíos y pégalo.</span>
           </div>
           <button type="button" id="btnCopyHtmlSecondary" class="text-[#CC0000] hover:underline font-bold shrink-0 ml-2">Copiar ahora</button>
         </div>
@@ -279,7 +372,7 @@
         <!-- VISTA CÓDIGO HTML -->
         <div id="codeContainer" class="hidden p-4 bg-slate-900 text-slate-100 flex-1 flex flex-col min-h-[560px] max-h-[76vh]">
           <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-700 text-xs text-slate-400">
-            <span>HTML Tablas Anidadas Fluidas y Compatibles</span>
+            <span>HTML Tablas Anidadas Fluidas + Etiquetas EDES (_mce_src)</span>
             <button type="button" id="btnCopyFromCodeTab" class="bg-[#CC0000] hover:bg-red-700 text-white font-semibold px-3 py-1 rounded transition">
               <i class="fa-regular fa-copy mr-1"></i>Copiar todo
             </button>
@@ -307,7 +400,7 @@
 
       <!-- PESTAÑAS -->
       <div class="flex border-b border-slate-200 bg-slate-100/70 px-4 pt-2 gap-1 overflow-x-auto shrink-0 select-none">
-        <button type="button" data-cfg-tab="general" class="cfg-tab-btn px-3 py-1.5 text-xs font-bold rounded-t-lg bg-white text-slate-900 border-t-2 border-[#CC0000] shadow-2xs">General</button>
+        <button type="button" data-cfg-tab="general" class="cfg-tab-btn px-3 py-1.5 text-xs font-bold rounded-t-lg bg-white text-slate-900 border-t-2 border-[#CC0000] shadow-2xs">General & EDES</button>
         <button type="button" data-cfg-tab="header" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Titular</button>
         <button type="button" data-cfg-tab="image" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Cartel / Img</button>
         <button type="button" data-cfg-tab="richtext" class="cfg-tab-btn px-3 py-1.5 text-xs font-semibold rounded-t-lg text-slate-600 hover:text-slate-900">Texto Rico</button>
@@ -333,9 +426,9 @@
               </select>
             </div>
             <div>
-              <label for="cfgGeneral_edesPattern" class="block text-xs font-bold text-slate-700 uppercase mb-1">Patrón de ID EDES CCOO</label>
-              <input type="text" id="cfgGeneral_edesPattern" name="cfgGeneral_edesPattern" placeholder="[EDES:{ID}]" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:border-[#CC0000]">
-              <p class="text-[11px] text-slate-400 mt-1">Usa {ID} como marcador. Ej: [EDES:{ID}] o la ruta interna del gestor EDES.</p>
+              <label for="cfgGeneral_edesPattern" class="block text-xs font-bold text-slate-700 uppercase mb-1">Ruta / Patrón de imágenes EDES CCOO</label>
+              <input type="text" id="cfgGeneral_edesPattern" name="cfgGeneral_edesPattern" placeholder="edes.php?R://co/cotplimg/{ID}" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono focus:outline-none focus:border-[#CC0000]">
+              <p class="text-[11px] text-slate-500 mt-1">Por defecto: <code class="bg-slate-100 px-1 rounded">edes.php?R://co/cotplimg/{ID}</code>. Si escribes solo el número (ej. 19139), añade <code class="bg-slate-100 px-1 rounded">.png</code> automáticamente.</p>
             </div>
           </div>
         </div>
@@ -380,30 +473,37 @@
               </select>
             </div>
             <div>
-              <label for="cfgImage_maxWidth" class="block text-xs font-bold text-slate-700 uppercase mb-1">Tamaño por defecto</label>
-              <select id="cfgImage_maxWidth" name="cfgImage_maxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
-                <option value="100%">Ancho completo (100%)</option>
-                <option value="500px">Cartel Grande (500px)</option>
-                <option value="400px">Cartel Mediano (400px)</option>
-                <option value="300px">Compacto (300px)</option>
+              <label for="cfgImage_widthPx" class="block text-xs font-bold text-slate-700 uppercase mb-1">Ancho de imagen (width)</label>
+              <select id="cfgImage_widthPx" name="cfgImage_widthPx" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+                <option value="600">Ancho completo (600)</option>
+                <option value="500">Grande (500)</option>
+                <option value="400">Mediano (400)</option>
+                <option value="300">Compacto (300 - Estándar EDES)</option>
+                <option value="250">Miniatura (250)</option>
               </select>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label for="cfgImage_edesId" class="block text-xs font-bold text-slate-700 uppercase mb-1">ID de EDES por defecto</label>
-              <input type="text" id="cfgImage_edesId" name="cfgImage_edesId" placeholder="Ej: cartel_huelga_sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <input type="text" id="cfgImage_edesId" name="cfgImage_edesId" placeholder="Ej: 19139 o 19139.png" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label for="cfgImage_imageUrl" class="block text-xs font-bold text-slate-700 uppercase mb-1">URL de imagen por defecto</label>
+              <label for="cfgImage_imageUrl" class="block text-xs font-bold text-slate-700 uppercase mb-1">URL directa por defecto</label>
               <input type="url" id="cfgImage_imageUrl" name="cfgImage_imageUrl" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
           </div>
-          <div class="pt-1">
-            <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
-              <input type="checkbox" id="cfgImage_rounded" name="cfgImage_rounded" class="rounded text-[#CC0000]">
-              <span>Bordes redondeados por defecto</span>
-            </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="cfgImage_altText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Título / Alt por defecto</label>
+              <input type="text" id="cfgImage_altText" name="cfgImage_altText" placeholder="Cartel informativo CCOO" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+            </div>
+            <div class="flex items-end pb-1.5">
+              <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                <input type="checkbox" id="cfgImage_rounded" name="cfgImage_rounded" class="rounded text-[#CC0000]">
+                <span>Bordes redondeados por defecto</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -732,7 +832,7 @@
     const DEFAULT_CONFIG = {
       general: {
         desktopMaxWidth: '800px',
-        edesPattern: '[EDES:{ID}]'
+        edesPattern: 'edes.php?R://co/cotplimg/{ID}'
       },
       header: {
         kicker: 'Unión Comarcal Sur | Comisiones Obreras de Madrid',
@@ -742,13 +842,13 @@
       image: {
         method: 'edes',
         edesId: '',
-        imageUrl: 'https://placehold.co/1100x420/CC0000/FFFFFF/png?text=CCOO+MADRID+SUR',
-        maxWidth: '100%',
+        imageUrl: '',
+        widthPx: '300',
         align: 'center',
         linkUrl: '',
         altText: 'Cartel informativo CCOO',
         caption: '',
-        rounded: true
+        rounded: false
       },
       richtext: {
         fontSize: '15px',
@@ -792,22 +892,27 @@
     let blocksState = [];
     let cloudDrafts = [];
 
+    // ESTADO DE DRAG & DROP (SOPORTA TANTO REORDENACIÓN COMO INSERCIÓN DE NUEVOS)
+    let dragPayload = null; // { mode: 'reorder' | 'insert', fromIndex?: number, blockType?: string }
+
     function generateId() {
       return 'blk_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
     }
 
     const BLOCK_META = {
-      header: { label: 'Cabecera / Titular', icon: 'fa-solid fa-heading', badgeColor: 'bg-red-50 text-[#CC0000] border-red-200' },
-      image: { label: 'Imagen / Cartel', icon: 'fa-regular fa-image', badgeColor: 'bg-sky-50 text-sky-700 border-sky-200' },
-      richtext: { label: 'Texto Rico', icon: 'fa-solid fa-align-left', badgeColor: 'bg-slate-100 text-slate-700 border-slate-300' },
-      callout: { label: 'Caja Destacada', icon: 'fa-solid fa-quote-left', badgeColor: 'bg-amber-50 text-amber-800 border-amber-200' },
-      button: { label: 'Botón CTA', icon: 'fa-solid fa-hand-pointer', badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-      closing: { label: 'Lema Cierre', icon: 'fa-solid fa-signature', badgeColor: 'bg-purple-50 text-purple-700 border-purple-200' },
-      footer_ucsur: { label: 'Pie UC Sur', icon: 'fa-solid fa-id-card', badgeColor: 'bg-red-600 text-white border-red-700' }
+      header: { label: 'Cabecera / Titular', shortLabel: 'Titular', icon: 'fa-solid fa-heading', badgeColor: 'bg-red-50 text-[#CC0000] border-red-200' },
+      image: { label: 'Imagen / Cartel', shortLabel: 'Imagen', icon: 'fa-regular fa-image', badgeColor: 'bg-sky-50 text-sky-700 border-sky-200' },
+      richtext: { label: 'Texto Rico', shortLabel: 'Texto', icon: 'fa-solid fa-align-left', badgeColor: 'bg-slate-100 text-slate-700 border-slate-300' },
+      callout: { label: 'Caja Destacada', shortLabel: 'Aviso', icon: 'fa-solid fa-quote-left', badgeColor: 'bg-amber-50 text-amber-800 border-amber-200' },
+      button: { label: 'Botón CTA', shortLabel: 'Botón', icon: 'fa-solid fa-hand-pointer', badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      closing: { label: 'Lema Cierre', shortLabel: 'Cierre', icon: 'fa-solid fa-signature', badgeColor: 'bg-purple-50 text-purple-700 border-purple-200' },
+      footer_ucsur: { label: 'Pie UC Sur', shortLabel: 'Pie', icon: 'fa-solid fa-id-card', badgeColor: 'bg-red-600 text-white border-red-700' }
     };
 
-    function createBlockFromDefaults(type) {
-      const base = { id: generateId(), type: type, visible: true, collapsed: false };
+    // isCollapsed = false para bloques recién creados, true para bloques de plantilla o correo base
+    function createBlockFromDefaults(type, isCollapsed) {
+      const collapsedState = (isCollapsed !== undefined) ? Boolean(isCollapsed) : false;
+      const base = { id: generateId(), type: type, visible: true, collapsed: collapsedState };
       if (type === 'header') return Object.assign({}, base, userSettings.header);
       if (type === 'image') return Object.assign({}, base, userSettings.image);
       if (type === 'richtext') return Object.assign({}, base, {
@@ -828,6 +933,22 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    }
+
+    // Construye la ruta EDES válida para CCOO
+    function buildEdesSrcString(rawEdesInput) {
+      const clean = String(rawEdesInput || '').trim();
+      if (!clean) return '';
+      if (clean.indexOf('edes.php') === 0 || clean.indexOf('http://') === 0 || clean.indexOf('https://') === 0) {
+        return clean;
+      }
+      // Si solo pone el número o nombre sin extensión (ej: 19139), añade .png
+      const filePart = /\.[a-zA-Z0-9]{2,5}$/.test(clean) ? clean : (clean + '.png');
+      let pattern = (userSettings.general && userSettings.general.edesPattern) ? userSettings.general.edesPattern.trim() : 'edes.php?R://co/cotplimg/{ID}';
+      if (!pattern || pattern === '[EDES:{ID}]') {
+        pattern = 'edes.php?R://co/cotplimg/{ID}';
+      }
+      return pattern.indexOf('{ID}') !== -1 ? pattern.replace('{ID}', filePart) : (pattern + filePart);
     }
 
     function sanitizeAndStyleRichText(rawHtml, fontSize, textAlign) {
@@ -867,7 +988,8 @@
       return tempDiv.innerHTML;
     }
 
-    function renderSingleBlockToEmailHtml(blk) {
+    // isPreviewMode = true permite mostrar una tarjeta visual cuando se usa una ruta relativa edes.php que solo existe dentro de la intranet de CCOO
+    function renderSingleBlockToEmailHtml(blk, isPreviewMode) {
       if (!blk || !blk.visible) return '';
 
       if (blk.type === 'header') {
@@ -883,35 +1005,51 @@
 
       if (blk.type === 'image') {
         const method = blk.method || 'edes';
-        let src = '';
-        if (method === 'edes') {
-          const edesId = (blk.edesId || '').trim();
-          const pattern = userSettings.general.edesPattern || '[EDES:{ID}]';
-          src = edesId ? pattern.replace('{ID}', edesId) : '';
-        } else {
-          src = (blk.imageUrl || '').trim();
-        }
-
-        const alt = escapeHtml(blk.altText || 'Imagen CCOO');
+        const edesId = (blk.edesId || '').trim();
+        const directUrl = (blk.imageUrl || '').trim();
+        const alt = escapeHtml((blk.altText || 'Imagen CCOO').trim());
         const link = (blk.linkUrl || '').trim();
         const align = blk.align || 'center';
-        const maxW = blk.maxWidth || '100%';
+        
+        // Compatibilidad con campo antiguo maxWidth o nuevo widthPx
+        let widthNum = parseInt(blk.widthPx || blk.maxWidth || '300', 10);
+        if (isNaN(widthNum) || String(blk.maxWidth) === '100%' || widthNum > 800) {
+          widthNum = 600;
+        }
         const radius = blk.rounded ? 'border-radius: 6px;' : '';
         const caption = escapeHtml((blk.caption || '').trim());
 
-        let innerImageHtml = '';
-        if (!src && method === 'edes') {
-          innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + maxW + '; background:#fff1f2; border:2px dashed #fda4af; padding:24px 14px; border-radius:6px; color:#9f1239; font-weight:bold; font-size:13px; text-align:center;">[ Inserte ID de imagen EDES ]</div>';
+        let finalSrc = '';
+        if (method === 'edes') {
+          finalSrc = buildEdesSrcString(edesId);
         } else {
-          const maxWidthStyle = maxW === '100%' ? 'width: 100%; max-width: 100%;' : 'width: 100%; max-width: ' + maxW + ';';
-          const imgTag = '<img src="' + escapeHtml(src) + '" alt="' + alt + '" border="0" style="display: block; ' + maxWidthStyle + ' height: auto; border: 0; outline: none; margin: 0 auto; ' + radius + '">';
+          finalSrc = directUrl;
+        }
+
+        let innerImageHtml = '';
+
+        if (!finalSrc) {
+          innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + widthNum + 'px; background:#fff1f2; border:2px dashed #fda4af; padding:22px 14px; border-radius:6px; color:#9f1239; font-weight:bold; font-size:12px; text-align:center; box-sizing:border-box;">[ Bloque de Imagen: Introduce el ID de EDES o la URL ]</div>';
+        } else if (isPreviewMode && method === 'edes' && finalSrc.indexOf('edes.php') === 0 && !directUrl) {
+          // En la vista previa fuera de la intranet de CCOO, edes.php no resuelve salvo que haya URL auxiliar, mostramos recuadro representativo con el código exacto
+          innerImageHtml = '<div style="display:inline-block; width:100%; max-width:' + widthNum + 'px; background:#f8fafc; border:2px dashed #cbd5e1; padding:22px 14px; border-radius:6px; color:#334155; font-family:Arial,sans-serif; text-align:center; box-sizing:border-box;">' +
+            '<div style="color:#CC0000; font-weight:bold; font-size:13px; margin-bottom:4px;">Imagen EDES CCOO: ' + alt + '</div>' +
+            '<div style="font-family:monospace; font-size:11px; color:#64748b; word-break:break-all;">src="' + escapeHtml(finalSrc) + '" (width=' + widthNum + ')</div>' +
+            '</div>';
+        } else {
+          // Si estamos en previsualización y el usuario puso tanto ID de EDES como URL auxiliar, usamos la URL para previsualizar, pero en el HTML final usamos finalSrc (EDES)
+          const srcToRender = (isPreviewMode && method === 'edes' && directUrl) ? directUrl : finalSrc;
+          const mceAttr = (method === 'edes') ? ' _mce_src="' + escapeHtml(finalSrc) + '"' : '';
+          const marginAlign = align === 'center' ? 'margin: 0 auto;' : (align === 'right' ? 'margin: 0 0 0 auto;' : 'margin: 0;');
+
+          const imgTag = '<img title="' + alt + '" alt="' + alt + '" src="' + escapeHtml(srcToRender) + '"' + mceAttr + ' width="' + widthNum + '" border="0" style="display: block; width: 100%; max-width: ' + widthNum + 'px; height: auto; border: 0; outline: none; ' + marginAlign + ' ' + radius + '">';
           innerImageHtml = link ? '<a href="' + escapeHtml(link) + '" target="_blank" style="text-decoration: none; border: 0;">' + imgTag + '</a>' : imgTag;
         }
 
         return '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 0 0 20px 0;">' +
           '<tr><td align="' + align + '" style="text-align: ' + align + ';">' +
-          innerImageHtml +
-          (caption ? '<p style="margin: 6px 0 0 0; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #666666; font-style: italic;">' + caption + '</p>' : '') +
+          '<p style="margin: 0; text-align: ' + align + ';">' + innerImageHtml + '<br></p>' +
+          (caption ? '<p style="margin: 6px 0 0 0; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #666666; font-style: italic; text-align: ' + align + ';">' + caption + '</p>' : '') +
           '</td></tr></table>';
       }
 
@@ -1013,8 +1151,8 @@
       return '';
     }
 
-    function buildFullEmailDocumentHtml() {
-      const innerBlocks = blocksState.map(blk => renderSingleBlockToEmailHtml(blk)).filter(Boolean).join('\n');
+    function buildFullEmailDocumentHtml(isPreviewMode) {
+      const innerBlocks = blocksState.map(blk => renderSingleBlockToEmailHtml(blk, isPreviewMode)).filter(Boolean).join('\n');
       const maxW = userSettings.general.desktopMaxWidth || '800px';
       const containerStyle = (maxW === '100%') ? 'width: 100%;' : 'max-width: ' + maxW + '; width: 100%;';
 
@@ -1027,10 +1165,12 @@
     }
 
     function updatePreviewOnly() {
-      const fullHtml = buildFullEmailDocumentHtml();
-      document.getElementById('desktopLiveEmailRender').innerHTML = fullHtml;
-      document.getElementById('mobileLiveEmailRender').innerHTML = fullHtml;
-      document.getElementById('rawHtmlOutput').value = fullHtml;
+      const previewHtml = buildFullEmailDocumentHtml(true);
+      const rawHtml = buildFullEmailDocumentHtml(false);
+      document.getElementById('desktopLiveEmailRender').innerHTML = previewHtml;
+      document.getElementById('mobileLiveEmailRender').innerHTML = previewHtml;
+      document.getElementById('rawHtmlOutput').value = rawHtml;
+      
       const count = blocksState.filter(b => b.visible).length;
       document.getElementById('blockCounterLabel').textContent = count + ' de ' + blocksState.length + ' bloques activos';
       
@@ -1042,7 +1182,7 @@
     }
 
     function saveLocalWorkingState() {
-      try { localStorage.setItem('ccoo_working_blocks_v4', JSON.stringify(blocksState)); } catch (e) {}
+      try { localStorage.setItem('ccoo_working_blocks_v5', JSON.stringify(blocksState)); } catch (e) {}
     }
 
     // SINCRONIZACIÓN GOOGLE DRIVE / LOCAL
@@ -1072,9 +1212,13 @@
         if (data && data.templates) cloudDrafts = data.templates;
         if (data && data.settings && Object.keys(data.settings).length > 0) {
           userSettings = Object.assign({}, DEFAULT_CONFIG, data.settings);
+          if (!userSettings.general.edesPattern || userSettings.general.edesPattern === '[EDES:{ID}]') {
+            userSettings.general.edesPattern = 'edes.php?R://co/cotplimg/{ID}';
+          }
         }
         renderDraftsList();
         populateSettingsInputs();
+        updatePreviewOnly();
         setCloudStatus('ok', 'Google Drive');
       } catch (err) {
         console.warn('Fallo de conexión Drive, usando copia local:', err);
@@ -1097,7 +1241,120 @@
       }
     }
 
-    // PANEL DE EDICIÓN DE BLOQUES
+    // LÍNEA DE TIEMPO HORIZONTAL INTERACTIVA
+    function renderTimelineUI() {
+      const tlContainer = document.getElementById('timelineContainer');
+      if (!tlContainer) return;
+
+      if (blocksState.length === 0) {
+        tlContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center text-xs text-slate-400 italic">Arrastra aquí cualquier icono de arriba para añadir el primer bloque</div>';
+        tlContainer.ondragover = (e) => { e.preventDefault(); };
+        tlContainer.ondrop = (e) => {
+          e.preventDefault();
+          if (dragPayload && dragPayload.mode === 'insert' && dragPayload.blockType) {
+            blocksState.push(createBlockFromDefaults(dragPayload.blockType, false));
+            dragPayload = null;
+            renderAllBlocksUI();
+          }
+        };
+        return;
+      }
+
+      tlContainer.innerHTML = blocksState.map((blk, idx) => {
+        const meta = BLOCK_META[blk.type] || { shortLabel: blk.type, icon: 'fa-solid fa-cube' };
+        const stateClasses = (blk.collapsed ? 'is-collapsed ' : '') + (!blk.visible ? 'is-hidden-email ' : '');
+        return '<div class="timeline-item ' + stateClasses + '" draggable="true" data-tl-index="' + idx + '" title="Bloque ' + (idx + 1) + ': ' + meta.label + ' (Clic para editar · Arrastra para mover)">' +
+          '<span class="w-4 h-4 rounded-full bg-[#CC0000] text-white text-[10px] font-bold inline-flex items-center justify-center shrink-0">' + (idx + 1) + '</span>' +
+          '<i class="' + meta.icon + ' text-xs text-slate-600 shrink-0"></i>' +
+          '<span class="text-[11px] font-semibold truncate">' + meta.shortLabel + '</span>' +
+          '</div>';
+      }).join('');
+
+      const items = tlContainer.querySelectorAll('.timeline-item');
+      items.forEach(item => {
+        const idx = parseInt(item.getAttribute('data-tl-index'), 10);
+
+        // Clic en línea de tiempo: despliega ese bloque y hace scroll hasta él
+        item.addEventListener('click', () => {
+          const targetBlk = blocksState[idx];
+          if (!targetBlk) return;
+          if (targetBlk.collapsed) {
+            targetBlk.collapsed = false;
+            renderAllBlocksUI();
+          }
+          const cardEl = document.getElementById('block-card-' + targetBlk.id);
+          if (cardEl) {
+            cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            cardEl.classList.remove('highlight-pulse');
+            void cardEl.offsetWidth;
+            cardEl.classList.add('highlight-pulse');
+          }
+        });
+
+        // Drag start desde la línea de tiempo
+        item.addEventListener('dragstart', (e) => {
+          dragPayload = { mode: 'reorder', fromIndex: idx };
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', String(idx));
+          item.classList.add('opacity-50');
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('opacity-50');
+          tlContainer.querySelectorAll('.timeline-item').forEach(el => {
+            el.classList.remove('tl-drag-left', 'tl-drag-right');
+          });
+          dragPayload = null;
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          if (!dragPayload) return;
+          const rect = item.getBoundingClientRect();
+          const isAfter = (e.clientX - rect.left) > (rect.width / 2);
+          item.classList.toggle('tl-drag-left', !isAfter);
+          item.classList.toggle('tl-drag-right', isAfter);
+        });
+
+        item.addEventListener('dragleave', () => {
+          item.classList.remove('tl-drag-left', 'tl-drag-right');
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const rect = item.getBoundingClientRect();
+          const isAfter = (e.clientX - rect.left) > (rect.width / 2);
+          item.classList.remove('tl-drag-left', 'tl-drag-right');
+
+          if (!dragPayload) return;
+
+          if (dragPayload.mode === 'insert' && dragPayload.blockType) {
+            const insertIdx = isAfter ? idx + 1 : idx;
+            const newBlk = createBlockFromDefaults(dragPayload.blockType, false);
+            blocksState.splice(insertIdx, 0, newBlk);
+            dragPayload = null;
+            renderAllBlocksUI();
+            showToast('Bloque insertado', 'Añadido en la posición ' + (insertIdx + 1));
+            setTimeout(() => {
+              const cardEl = document.getElementById('block-card-' + newBlk.id);
+              if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 60);
+          } else if (dragPayload.mode === 'reorder' && typeof dragPayload.fromIndex === 'number') {
+            const fromIdx = dragPayload.fromIndex;
+            if (fromIdx === idx) return;
+            const moved = blocksState.splice(fromIdx, 1)[0];
+            let targetIdx = isAfter ? idx + 1 : idx;
+            if (fromIdx < targetIdx) targetIdx--;
+            blocksState.splice(targetIdx, 0, moved);
+            dragPayload = null;
+            renderAllBlocksUI();
+          }
+        });
+      });
+    }
+
+    // PANEL DE EDICIÓN INTERIOR DE CADA BLOQUE
     function renderBlockEditorInterior(blk, index) {
       const pfx = 'blk_' + index + '_';
       if (blk.type === 'header') {
@@ -1120,10 +1377,14 @@
 
       if (blk.type === 'image') {
         const method = blk.method || 'edes';
+        let widthVal = String(blk.widthPx || blk.maxWidth || '300').replace('px', '');
+        if (widthVal === '100%') widthVal = '600';
+        const computedEdesPreview = buildEdesSrcString(blk.edesId || '19139');
+
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
           '<div>' +
-          '<label for="' + pfx + 'method" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Origen de la imagen</label>' +
+          '<label for="' + pfx + 'method" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Método de inserción</label>' +
           '<select id="' + pfx + 'method" name="method" data-field="method" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="edes" ' + (method === 'edes' ? 'selected' : '') + '>ID de EDES (CCOO)</option>' +
           '<option value="url" ' + (method === 'url' ? 'selected' : '') + '>URL Directa</option>' +
@@ -1136,28 +1397,31 @@
           '<option value="right" ' + (blk.align === 'right' ? 'selected' : '') + '>Derecha</option>' +
           '</select></div>' +
           '<div>' +
-          '<label for="' + pfx + 'maxWidth" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Tamaño máximo</label>' +
-          '<select id="' + pfx + 'maxWidth" name="maxWidth" data-field="maxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
-          '<option value="100%" ' + (blk.maxWidth === '100%' ? 'selected' : '') + '>Ancho completo</option>' +
-          '<option value="500px" ' + (blk.maxWidth === '500px' ? 'selected' : '') + '>500px</option>' +
-          '<option value="400px" ' + (blk.maxWidth === '400px' ? 'selected' : '') + '>400px</option>' +
-          '<option value="300px" ' + (blk.maxWidth === '300px' ? 'selected' : '') + '>300px</option>' +
+          '<label for="' + pfx + 'widthPx" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Ancho (width en px)</label>' +
+          '<select id="' + pfx + 'widthPx" name="widthPx" data-field="widthPx" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<option value="600" ' + (widthVal === '600' ? 'selected' : '') + '>600px (Ancho completo)</option>' +
+          '<option value="500" ' + (widthVal === '500' ? 'selected' : '') + '>500px (Cartel grande)</option>' +
+          '<option value="400" ' + (widthVal === '400' ? 'selected' : '') + '>400px (Mediano)</option>' +
+          '<option value="300" ' + (widthVal === '300' ? 'selected' : '') + '>300px (Estándar EDES)</option>' +
+          '<option value="250" ' + (widthVal === '250' ? 'selected' : '') + '>250px (Compacto)</option>' +
           '</select></div></div>' +
-          (method === 'edes' ?
-            '<div>' +
-            '<label for="' + pfx + 'edesId" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">ID de EDES de la imagen</label>' +
-            '<input type="text" id="' + pfx + 'edesId" name="edesId" data-field="edesId" value="' + escapeHtml(blk.edesId) + '" placeholder="Ej: cartel_11n_sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' :
-            '<div>' +
-            '<label for="' + pfx + 'imageUrl" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">URL directa de la imagen</label>' +
-            '<input type="url" id="' + pfx + 'imageUrl" name="imageUrl" data-field="imageUrl" value="' + escapeHtml(blk.imageUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>'
-          ) +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">' +
+          '<div>' +
+          '<label for="' + pfx + 'edesId" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">ID de EDES CCOO ' + (method === 'edes' ? '<span class="text-[#CC0000]">*</span>' : '(Opcional)') + '</label>' +
+          '<input type="text" id="' + pfx + 'edesId" name="edesId" data-field="edesId" value="' + escapeHtml(blk.edesId) + '" placeholder="Ej: 19139 o 19139.png" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<p class="text-[10px] text-slate-500 mt-1 font-mono truncate">Salida: ' + escapeHtml(computedEdesPreview) + '</p></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'imageUrl" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">URL Directa ' + (method === 'url' ? '<span class="text-[#CC0000]">*</span>' : '(Opcional para vista previa)') + '</label>' +
+          '<input type="url" id="' + pfx + 'imageUrl" name="imageUrl" data-field="imageUrl" value="' + escapeHtml(blk.imageUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<p class="text-[10px] text-slate-500 mt-1">Puedes pegar una URL pública o usar el ID de EDES.</p></div>' +
+          '</div>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div>' +
+          '<label for="' + pfx + 'altText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título y Texto Alternativo (title / alt)</label>' +
+          '<input type="text" id="' + pfx + 'altText" name="altText" data-field="altText" value="' + escapeHtml(blk.altText) + '" placeholder="Ej: CANCELACION LEGANES" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
           '<div>' +
           '<label for="' + pfx + 'linkUrl" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace al pulsar (opcional)</label>' +
           '<input type="url" id="' + pfx + 'linkUrl" name="linkUrl" data-field="linkUrl" value="' + escapeHtml(blk.linkUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div>' +
-          '<label for="' + pfx + 'altText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto alternativo (Alt)</label>' +
-          '<input type="text" id="' + pfx + 'altText" name="altText" data-field="altText" value="' + escapeHtml(blk.altText) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>' +
           '<div class="flex items-center justify-between gap-3">' +
           '<input type="text" name="caption" data-field="caption" value="' + escapeHtml(blk.caption) + '" placeholder="Pie de foto opcional..." class="flex-1 rounded-lg border border-slate-300 px-3 py-1 text-xs focus:outline-none focus:border-[#CC0000]">' +
@@ -1181,9 +1445,9 @@
           ['12px','13px','14px','15px','16px','17px','18px','19px','20px'].map(s => '<option value="' + s + '" ' + (fSize === s ? 'selected' : '') + '>' + s + '</option>').join('') +
           '</select>' +
           '<div class="h-4 w-px bg-slate-300 mx-0.5"></div>' +
-          '<button type="button" data-wcmd="justifyLeft" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs" title="Izquierda"><i class="fa-solid fa-align-left"></i></button>' +
-          '<button type="button" data-wcmd="justifyCenter" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs" title="Centrado"><i class="fa-solid fa-align-center"></i></button>' +
-          '<button type="button" data-wcmd="justifyFull" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs" title="Justificado"><i class="fa-solid fa-align-justify"></i></button>' +
+          '<button type="button" data-walign="left" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs" title="Izquierda"><i class="fa-solid fa-align-left"></i></button>' +
+          '<button type="button" data-walign="center" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs" title="Centrado"><i class="fa-solid fa-align-center"></i></button>' +
+          '<button type="button" data-walign="justify" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs" title="Justificado"><i class="fa-solid fa-align-justify"></i></button>' +
           '<div class="h-4 w-px bg-slate-300 mx-0.5"></div>' +
           '<button type="button" data-wcmd="insertUnorderedList" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs"><i class="fa-solid fa-list-ul"></i></button>' +
           '<button type="button" data-wcmd="insertOrderedList" class="px-2 py-1 rounded hover:bg-white text-slate-700 text-xs"><i class="fa-solid fa-list-ol"></i></button>' +
@@ -1300,35 +1564,54 @@
       return '';
     }
 
+    function getBriefSummaryForBlock(blk) {
+      if (blk.type === 'header') return blk.title || blk.kicker || '';
+      if (blk.type === 'image') return (blk.method === 'edes' ? ('EDES: ' + (blk.edesId || 'sin ID')) : (blk.imageUrl || 'sin URL'));
+      if (blk.type === 'richtext') return (blk.html || '').replace(/<[^>]+>/g, ' ').trim().slice(0, 48);
+      if (blk.type === 'callout') return blk.title || blk.text || '';
+      if (blk.type === 'button') return blk.btnText || '';
+      if (blk.type === 'closing') return blk.closingLine || '';
+      if (blk.type === 'footer_ucsur') return (blk.addressLine1 || '') + ' · ' + (blk.email || '');
+      return '';
+    }
+
     function renderAllBlocksUI() {
+      renderTimelineUI();
       const container = document.getElementById('blocksListContainer');
       if (!container) return;
 
       if (blocksState.length === 0) {
         container.innerHTML = '<div class="bg-white rounded-xl border-2 border-dashed border-slate-300 p-8 text-center">' +
           '<p class="text-sm font-semibold text-slate-600 mb-1">El correo no tiene bloques activos</p>' +
-          '<p class="text-xs text-slate-400">Pulsa arriba en «+ Insertar nuevo bloque» para empezar.</p></div>';
+          '<p class="text-xs text-slate-400">Pulsa o arrastra cualquiera de los botones superiores para empezar.</p></div>';
         updatePreviewOnly();
         return;
       }
 
       container.innerHTML = blocksState.map((blk, idx) => {
         const meta = BLOCK_META[blk.type] || { label: blk.type, icon: 'fa-solid fa-cube', badgeColor: 'bg-slate-100 text-slate-700' };
-        return '<div class="block-card bg-white rounded-xl shadow-xs border ' + (blk.visible ? 'border-slate-200' : 'border-slate-200 opacity-60') + ' overflow-hidden" data-index="' + idx + '" draggable="true">' +
-          '<div class="bg-slate-50/90 border-b border-slate-200 px-3.5 py-2 flex items-center justify-between gap-2 select-none">' +
-          '<div class="flex items-center gap-2 min-w-0">' +
-          '<span class="cursor-grab text-slate-400 hover:text-slate-600 px-1"><i class="fa-solid fa-grip-vertical"></i></span>' +
+        const summary = escapeHtml(getBriefSummaryForBlock(blk));
+
+        return '<div id="block-card-' + blk.id + '" class="block-card bg-white rounded-xl shadow-xs border ' + (blk.visible ? 'border-slate-200' : 'border-slate-200 opacity-55') + ' overflow-hidden" data-index="' + idx + '" draggable="true">' +
+          '<div class="card-header-bar bg-slate-50/90 border-b border-slate-200 px-3.5 py-2 flex items-center justify-between gap-2 select-none cursor-pointer">' +
+          '<div class="flex items-center gap-2 min-w-0 flex-1">' +
+          '<span class="drag-handle cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 px-1" title="Arrastrar para mover"><i class="fa-solid fa-grip-vertical"></i></span>' +
           '<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[11px] font-bold inline-flex items-center justify-center shrink-0">' + (idx + 1) + '</span>' +
-          '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold border ' + meta.badgeColor + ' truncate">' +
+          '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold border ' + meta.badgeColor + ' shrink-0">' +
           '<i class="' + meta.icon + '"></i><span>' + meta.label + '</span></span>' +
+          (blk.collapsed && summary ? '<span class="text-xs text-slate-400 truncate ml-1">— ' + summary + '</span>' : '') +
           '</div>' +
           '<div class="flex items-center gap-1 shrink-0">' +
-          '<button type="button" data-action="move-up" class="p-1 rounded hover:bg-slate-200 text-slate-600 text-xs" ' + (idx === 0 ? 'disabled' : '') + '><i class="fa-solid fa-arrow-up"></i></button>' +
-          '<button type="button" data-action="move-down" class="p-1 rounded hover:bg-slate-200 text-slate-600 text-xs" ' + (idx === blocksState.length - 1 ? 'disabled' : '') + '><i class="fa-solid fa-arrow-down"></i></button>' +
-          '<button type="button" data-action="duplicate" class="p-1 rounded hover:bg-slate-200 text-slate-600 text-xs" title="Duplicar"><i class="fa-regular fa-clone"></i></button>' +
-          '<button type="button" data-action="delete" class="p-1 rounded hover:bg-red-50 text-red-600 text-xs" title="Eliminar"><i class="fa-regular fa-trash-can"></i></button>' +
+          '<button type="button" data-action="toggle-collapse" class="px-2 py-1 rounded hover:bg-slate-200/80 ' + (blk.collapsed ? 'text-slate-500 bg-slate-100' : 'text-[#CC0000] bg-red-50') + ' text-xs font-semibold transition flex items-center gap-1" title="' + (blk.collapsed ? 'Mostrar contenido del bloque' : 'Contraer y ocultar contenido del bloque') + '">' +
+          '<i class="fa-solid ' + (blk.collapsed ? 'fa-eye-slash' : 'fa-eye') + '"></i>' +
+          '<span class="hidden sm:inline text-[10px]">' + (blk.collapsed ? 'Oculto' : 'Visible') + '</span>' +
+          '</button>' +
+          '<button type="button" data-action="move-up" class="p-1.5 rounded hover:bg-slate-200 text-slate-600 text-xs disabled:opacity-30" ' + (idx === 0 ? 'disabled' : '') + ' title="Subir"><i class="fa-solid fa-arrow-up"></i></button>' +
+          '<button type="button" data-action="move-down" class="p-1.5 rounded hover:bg-slate-200 text-slate-600 text-xs disabled:opacity-30" ' + (idx === blocksState.length - 1 ? 'disabled' : '') + ' title="Bajar"><i class="fa-solid fa-arrow-down"></i></button>' +
+          '<button type="button" data-action="duplicate" class="p-1.5 rounded hover:bg-slate-200 text-slate-600 text-xs" title="Duplicar bloque"><i class="fa-regular fa-clone"></i></button>' +
+          '<button type="button" data-action="delete" class="p-1.5 rounded hover:bg-red-50 text-red-600 text-xs" title="Eliminar bloque"><i class="fa-regular fa-trash-can"></i></button>' +
           '</div></div>' +
-          '<div class="p-3.5">' + renderBlockEditorInterior(blk, idx) + '</div>' +
+          '<div class="p-3.5 ' + (blk.collapsed ? 'hidden' : 'block') + '">' + renderBlockEditorInterior(blk, idx) + '</div>' +
           '</div>';
       }).join('');
 
@@ -1343,11 +1626,90 @@
         const blk = blocksState[idx];
         if (!blk) return;
 
+        // Clic en la barra superior del bloque para contraer/desplegar rápidamente
+        const headerBar = card.querySelector('.card-header-bar');
+        if (headerBar) {
+          headerBar.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            blk.collapsed = !blk.collapsed;
+            renderAllBlocksUI();
+          });
+        }
+
+        // Evitar que al seleccionar texto dentro de un input se dispare el drag de la tarjeta
+        card.addEventListener('mousedown', (e) => {
+          const isInput = e.target.closest('input, textarea, select, [contenteditable="true"]');
+          card.setAttribute('draggable', isInput ? 'false' : 'true');
+        });
+
+        card.addEventListener('dragstart', (e) => {
+          if (card.getAttribute('draggable') === 'false') {
+            e.preventDefault();
+            return;
+          }
+          dragPayload = { mode: 'reorder', fromIndex: idx };
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', String(idx));
+          card.classList.add('dragging');
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          document.querySelectorAll('.block-card').forEach(c => {
+            c.classList.remove('drag-over-top', 'drag-over-bottom');
+          });
+          dragPayload = null;
+        });
+
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          if (!dragPayload) return;
+          const rect = card.getBoundingClientRect();
+          const isAfter = (e.clientY - rect.top) > (rect.height / 2);
+          card.classList.toggle('drag-over-top', !isAfter);
+          card.classList.toggle('drag-over-bottom', isAfter);
+        });
+
+        card.addEventListener('dragleave', () => {
+          card.classList.remove('drag-over-top', 'drag-over-bottom');
+        });
+
+        card.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const rect = card.getBoundingClientRect();
+          const isAfter = (e.clientY - rect.top) > (rect.height / 2);
+          card.classList.remove('drag-over-top', 'drag-over-bottom');
+
+          if (!dragPayload) return;
+
+          if (dragPayload.mode === 'insert' && dragPayload.blockType) {
+            const insertIdx = isAfter ? idx + 1 : idx;
+            const newBlk = createBlockFromDefaults(dragPayload.blockType, false);
+            blocksState.splice(insertIdx, 0, newBlk);
+            dragPayload = null;
+            renderAllBlocksUI();
+            showToast('Bloque insertado', 'Añadido en la posición ' + (insertIdx + 1));
+          } else if (dragPayload.mode === 'reorder' && typeof dragPayload.fromIndex === 'number') {
+            const fromIdx = dragPayload.fromIndex;
+            if (fromIdx === idx) return;
+            const moved = blocksState.splice(fromIdx, 1)[0];
+            let targetIdx = isAfter ? idx + 1 : idx;
+            if (fromIdx < targetIdx) targetIdx--;
+            blocksState.splice(targetIdx, 0, moved);
+            dragPayload = null;
+            renderAllBlocksUI();
+          }
+        });
+
         card.querySelectorAll('[data-action]').forEach(btn => {
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const action = btn.getAttribute('data-action');
-            if (action === 'move-up' && idx > 0) {
+            if (action === 'toggle-collapse') {
+              blk.collapsed = !blk.collapsed;
+              renderAllBlocksUI();
+            } else if (action === 'move-up' && idx > 0) {
               const tmp = blocksState[idx - 1];
               blocksState[idx - 1] = blocksState[idx];
               blocksState[idx] = tmp;
@@ -1360,9 +1722,10 @@
             } else if (action === 'duplicate') {
               const clone = JSON.parse(JSON.stringify(blk));
               clone.id = generateId();
+              clone.collapsed = false;
               blocksState.splice(idx + 1, 0, clone);
               renderAllBlocksUI();
-              showToast('Bloque duplicado', 'Se añadió una copia.');
+              showToast('Bloque duplicado', 'Se añadió una copia desplegada.');
             } else if (action === 'delete') {
               blocksState.splice(idx, 1);
               renderAllBlocksUI();
@@ -1407,6 +1770,12 @@
               updatePreviewOnly();
             });
           }
+          card.querySelectorAll('[data-walign]').forEach(abtn => {
+            abtn.addEventListener('click', () => {
+              blk.textAlign = abtn.getAttribute('data-walign');
+              updatePreviewOnly();
+            });
+          });
           card.querySelectorAll('[data-wcmd]').forEach(wbtn => {
             wbtn.addEventListener('click', () => {
               editor.focus();
@@ -1427,11 +1796,22 @@
       });
     }
 
-    // ACCIONES GENERALES
+    // BOTONES DE AÑADIR BLOQUE (SOPORTAN CLIC Y ARRASTRE HACIA LA LÍNEA DE TIEMPO)
     document.querySelectorAll('.add-block-btn').forEach(btn => {
+      const type = btn.getAttribute('data-add-type');
+
+      btn.addEventListener('dragstart', (e) => {
+        dragPayload = { mode: 'insert', blockType: type };
+        e.dataTransfer.effectAllowed = 'copy';
+        e.dataTransfer.setData('text/plain', 'insert:' + type);
+      });
+
+      btn.addEventListener('dragend', () => {
+        dragPayload = null;
+      });
+
       btn.addEventListener('click', () => {
-        const type = btn.getAttribute('data-add-type');
-        const newBlk = createBlockFromDefaults(type);
+        const newBlk = createBlockFromDefaults(type, false); // Nuevo bloque aparece desplegado
         const lastIdx = blocksState.length - 1;
         if (type !== 'footer_ucsur' && lastIdx >= 0 && blocksState[lastIdx].type === 'footer_ucsur') {
           blocksState.splice(lastIdx, 0, newBlk);
@@ -1440,19 +1820,35 @@
         }
         renderAllBlocksUI();
         showToast('Bloque añadido', BLOCK_META[type].label);
+        setTimeout(() => {
+          const cardEl = document.getElementById('block-card-' + newBlk.id);
+          if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 60);
       });
     });
 
+    // BOTONES EXPANDIR / CONTRAER TODOS
+    document.getElementById('btnExpandAllBlocks').addEventListener('click', () => {
+      blocksState.forEach(b => { b.collapsed = false; });
+      renderAllBlocksUI();
+    });
+
+    document.getElementById('btnCollapseAllBlocks').addEventListener('click', () => {
+      blocksState.forEach(b => { b.collapsed = true; });
+      renderAllBlocksUI();
+    });
+
+    // NUEVO CORREO: TODOS LOS BLOQUES PREDEFINIDOS APARECEN CONTRAÍDOS
     document.getElementById('btnNewEmail').addEventListener('click', () => {
       if (confirm('¿Deseas iniciar un correo limpio con la estructura base de CCOO?')) {
         blocksState = [
-          createBlockFromDefaults('header'),
-          createBlockFromDefaults('richtext'),
-          createBlockFromDefaults('closing'),
-          createBlockFromDefaults('footer_ucsur')
+          createBlockFromDefaults('header', true),
+          createBlockFromDefaults('richtext', true),
+          createBlockFromDefaults('closing', true),
+          createBlockFromDefaults('footer_ucsur', true)
         ];
         renderAllBlocksUI();
-        showToast('Correo nuevo', 'Estructura base cargada.');
+        showToast('Correo nuevo', 'Bloques iniciales contraídos para facilitar la vista.');
       }
     });
 
@@ -1484,7 +1880,7 @@
     function populateSettingsInputs() {
       // General
       document.getElementById('cfgGeneral_desktopMaxWidth').value = userSettings.general.desktopMaxWidth || '800px';
-      document.getElementById('cfgGeneral_edesPattern').value = userSettings.general.edesPattern || '[EDES:{ID}]';
+      document.getElementById('cfgGeneral_edesPattern').value = userSettings.general.edesPattern || 'edes.php?R://co/cotplimg/{ID}';
       // Header
       document.getElementById('cfgHeader_kicker').value = userSettings.header.kicker || '';
       document.getElementById('cfgHeader_align').value = userSettings.header.align || 'left';
@@ -1492,9 +1888,10 @@
       // Image
       document.getElementById('cfgImage_method').value = userSettings.image.method || 'edes';
       document.getElementById('cfgImage_align').value = userSettings.image.align || 'center';
-      document.getElementById('cfgImage_maxWidth').value = userSettings.image.maxWidth || '100%';
+      document.getElementById('cfgImage_widthPx').value = String(userSettings.image.widthPx || '300').replace('px', '');
       document.getElementById('cfgImage_edesId').value = userSettings.image.edesId || '';
       document.getElementById('cfgImage_imageUrl').value = userSettings.image.imageUrl || '';
+      document.getElementById('cfgImage_altText').value = userSettings.image.altText || 'Cartel informativo CCOO';
       document.getElementById('cfgImage_rounded').checked = !!userSettings.image.rounded;
       // RichText
       document.getElementById('cfgRichText_fontSize').value = userSettings.richtext.fontSize || '15px';
@@ -1542,9 +1939,10 @@
       userSettings.header.title = document.getElementById('cfgHeader_title').value;
       userSettings.image.method = document.getElementById('cfgImage_method').value;
       userSettings.image.align = document.getElementById('cfgImage_align').value;
-      userSettings.image.maxWidth = document.getElementById('cfgImage_maxWidth').value;
+      userSettings.image.widthPx = document.getElementById('cfgImage_widthPx').value;
       userSettings.image.edesId = document.getElementById('cfgImage_edesId').value;
       userSettings.image.imageUrl = document.getElementById('cfgImage_imageUrl').value;
+      userSettings.image.altText = document.getElementById('cfgImage_altText').value;
       userSettings.image.rounded = document.getElementById('cfgImage_rounded').checked;
       userSettings.richtext.fontSize = document.getElementById('cfgRichText_fontSize').value;
       userSettings.richtext.textAlign = document.getElementById('cfgRichText_textAlign').value;
@@ -1603,7 +2001,7 @@
         }
         if (blk.type === 'image') {
           blk.align = userSettings.image.align;
-          blk.maxWidth = userSettings.image.maxWidth;
+          blk.widthPx = userSettings.image.widthPx;
           blk.rounded = userSettings.image.rounded;
           blk.method = userSettings.image.method;
         }
@@ -1635,7 +2033,7 @@
       }
     });
 
-    // BIBLIOTECA DE PLANTILLAS
+    // BIBLIOTECA DE PLANTILLAS (AL CARGAR UNA PLANTILLA, SUS BLOQUES APARECEN CONTRAÍDOS)
     const draftsModal = document.getElementById('draftsModal');
     const draftsList = document.getElementById('draftsList');
     const inputDraftName = document.getElementById('inputDraftName');
@@ -1703,11 +2101,14 @@
           const idx = parseInt(b.getAttribute('data-load-draft'), 10);
           if (cloudDrafts[idx]) {
             blocksState = JSON.parse(JSON.stringify(cloudDrafts[idx].blocks));
-            blocksState.forEach(blk => { blk.id = generateId(); });
+            blocksState.forEach(blk => {
+              blk.id = generateId();
+              blk.collapsed = true; // Aparecen contraídos al cargar plantilla
+            });
             renderAllBlocksUI();
             draftsModal.classList.add('hidden');
             draftsModal.classList.remove('flex');
-            showToast('Plantilla cargada', cloudDrafts[idx].name);
+            showToast('Plantilla cargada', cloudDrafts[idx].name + ' (bloques contraídos)');
           }
         });
       });
@@ -1794,32 +2195,36 @@
       setTimeout(() => toastEl.classList.add('translate-y-20', 'opacity-0'), 3000);
     }
 
-    // INICIALIZACIÓN
+    // INICIALIZACIÓN (AL ARRANCAR, TODOS LOS BLOQUES PREDEFINIDOS APARECEN CONTRAÍDOS)
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        const saved = localStorage.getItem('ccoo_working_blocks_v4');
+        const saved = localStorage.getItem('ccoo_working_blocks_v5');
         if (saved) {
           const parsed = JSON.parse(saved);
-          blocksState = (Array.isArray(parsed) && parsed.length > 0) ? parsed : [
-            createBlockFromDefaults('header'),
-            createBlockFromDefaults('richtext'),
-            createBlockFromDefaults('closing'),
-            createBlockFromDefaults('footer_ucsur')
-          ];
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            blocksState = parsed.map(b => Object.assign({}, b, { collapsed: true }));
+          } else {
+            blocksState = [
+              createBlockFromDefaults('header', true),
+              createBlockFromDefaults('richtext', true),
+              createBlockFromDefaults('closing', true),
+              createBlockFromDefaults('footer_ucsur', true)
+            ];
+          }
         } else {
           blocksState = [
-            createBlockFromDefaults('header'),
-            createBlockFromDefaults('richtext'),
-            createBlockFromDefaults('closing'),
-            createBlockFromDefaults('footer_ucsur')
+            createBlockFromDefaults('header', true),
+            createBlockFromDefaults('richtext', true),
+            createBlockFromDefaults('closing', true),
+            createBlockFromDefaults('footer_ucsur', true)
           ];
         }
       } catch (e) {
         blocksState = [
-          createBlockFromDefaults('header'),
-          createBlockFromDefaults('richtext'),
-          createBlockFromDefaults('closing'),
-          createBlockFromDefaults('footer_ucsur')
+          createBlockFromDefaults('header', true),
+          createBlockFromDefaults('richtext', true),
+          createBlockFromDefaults('closing', true),
+          createBlockFromDefaults('footer_ucsur', true)
         ];
       }
 
