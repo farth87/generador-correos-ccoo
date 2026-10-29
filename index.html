@@ -41,7 +41,7 @@
     .block-card.drag-over {
       border-top: 3px solid #CC0000;
     }
-    /* Chasis de Teléfono Móvil Hermético sin desbordamiento */
+    /* Chasis de Teléfono Móvil sin desbordamiento */
     .mobile-phone-frame {
       width: 375px;
       height: 720px;
@@ -115,7 +115,7 @@
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
-  <!-- BARRA SUPERIOR -->
+  <!-- TOP BAR -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
     <div class="max-w-[1700px] mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
@@ -322,8 +322,8 @@
         <div id="cfgTabContent_general" class="cfg-tab-pane space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ancho máximo en ordenador</label>
-              <select id="cfgGeneral_desktopMaxWidth" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgGeneral_desktopMaxWidth" class="block text-xs font-bold text-slate-700 uppercase mb-1">Ancho máximo en ordenador</label>
+              <select id="cfgGeneral_desktopMaxWidth" name="cfgGeneral_desktopMaxWidth" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="800px">800px (Recomendado - Amplio y legible)</option>
                 <option value="900px">900px (Extra ancho)</option>
                 <option value="700px">700px (Medio)</option>
@@ -332,9 +332,9 @@
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Patrón de ID EDES CCOO</label>
-              <input type="text" id="cfgGeneral_edesPattern" placeholder="[EDES:{ID}]" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:border-[#CC0000]">
-              <p class="text-[11px] text-slate-400 mt-1">Usa {ID} como marcador. Ej: [EDES:{ID}] o la ruta interna de tu servidor.</p>
+              <label for="cfgGeneral_edesPattern" class="block text-xs font-bold text-slate-700 uppercase mb-1">Patrón de ID EDES CCOO</label>
+              <input type="text" id="cfgGeneral_edesPattern" name="cfgGeneral_edesPattern" placeholder="[EDES:{ID}]" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:border-[#CC0000]">
+              <p class="text-[11px] text-slate-400 mt-1">Usa {ID} como marcador. Ej: [EDES:{ID}] o la ruta interna del gestor EDES.</p>
             </div>
           </div>
         </div>
@@ -343,20 +343,20 @@
         <div id="cfgTabContent_header" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="sm:col-span-2">
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Antetítulo predeterminado</label>
-              <input type="text" id="cfgHeader_kicker" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgHeader_kicker" class="block text-xs font-bold text-slate-700 uppercase mb-1">Antetítulo predeterminado</label>
+              <input type="text" id="cfgHeader_kicker" name="cfgHeader_kicker" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación predeterminada</label>
-              <select id="cfgHeader_align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgHeader_align" class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación predeterminada</label>
+              <select id="cfgHeader_align" name="cfgHeader_align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="left">Izquierda</option>
                 <option value="center">Centrado</option>
               </select>
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título principal sugerido</label>
-            <input type="text" id="cfgHeader_title" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+            <label for="cfgHeader_title" class="block text-xs font-bold text-slate-700 uppercase mb-1">Título principal sugerido</label>
+            <input type="text" id="cfgHeader_title" name="cfgHeader_title" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
           </div>
         </div>
 
@@ -364,23 +364,23 @@
         <div id="cfgTabContent_image" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Método de imagen por defecto</label>
-              <select id="cfgImage_method" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgImage_method" class="block text-xs font-bold text-slate-700 uppercase mb-1">Método de imagen por defecto</label>
+              <select id="cfgImage_method" name="cfgImage_method" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="edes">ID de EDES (CCOO)</option>
                 <option value="url">URL Directa</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación por defecto</label>
-              <select id="cfgImage_align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgImage_align" class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación por defecto</label>
+              <select id="cfgImage_align" name="cfgImage_align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="center">Centrado</option>
                 <option value="left">Izquierda</option>
                 <option value="right">Derecha</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tamaño por defecto</label>
-              <select id="cfgImage_maxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgImage_maxWidth" class="block text-xs font-bold text-slate-700 uppercase mb-1">Tamaño por defecto</label>
+              <select id="cfgImage_maxWidth" name="cfgImage_maxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="100%">Ancho completo (100%)</option>
                 <option value="500px">Cartel Grande (500px)</option>
                 <option value="400px">Cartel Mediano (400px)</option>
@@ -390,17 +390,17 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">ID de EDES por defecto</label>
-              <input type="text" id="cfgImage_edesId" placeholder="Ej: cartel_huelga_sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgImage_edesId" class="block text-xs font-bold text-slate-700 uppercase mb-1">ID de EDES por defecto</label>
+              <input type="text" id="cfgImage_edesId" name="cfgImage_edesId" placeholder="Ej: cartel_huelga_sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL de imagen por defecto</label>
-              <input type="url" id="cfgImage_imageUrl" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgImage_imageUrl" class="block text-xs font-bold text-slate-700 uppercase mb-1">URL de imagen por defecto</label>
+              <input type="url" id="cfgImage_imageUrl" name="cfgImage_imageUrl" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
           </div>
           <div class="pt-1">
             <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
-              <input type="checkbox" id="cfgImage_rounded" class="rounded text-[#CC0000]">
+              <input type="checkbox" id="cfgImage_rounded" name="cfgImage_rounded" class="rounded text-[#CC0000]">
               <span>Bordes redondeados por defecto</span>
             </label>
           </div>
@@ -410,8 +410,8 @@
         <div id="cfgTabContent_richtext" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tamaño de fuente por defecto</label>
-              <select id="cfgRichText_fontSize" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgRichText_fontSize" class="block text-xs font-bold text-slate-700 uppercase mb-1">Tamaño de fuente por defecto</label>
+              <select id="cfgRichText_fontSize" name="cfgRichText_fontSize" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="12px">12px</option>
                 <option value="13px">13px</option>
                 <option value="14px">14px</option>
@@ -424,8 +424,8 @@
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación por defecto</label>
-              <select id="cfgRichText_textAlign" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgRichText_textAlign" class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación por defecto</label>
+              <select id="cfgRichText_textAlign" name="cfgRichText_textAlign" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="left">Izquierda</option>
                 <option value="justify">Justificado</option>
                 <option value="center">Centrado</option>
@@ -433,8 +433,8 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto inicial al añadir bloque</label>
-            <textarea id="cfgRichText_initialHtml" rows="3" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-[#CC0000]"></textarea>
+            <label for="cfgRichText_initialHtml" class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto inicial al añadir bloque</label>
+            <textarea id="cfgRichText_initialHtml" name="cfgRichText_initialHtml" rows="3" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono focus:outline-none focus:border-[#CC0000]"></textarea>
           </div>
         </div>
 
@@ -442,12 +442,12 @@
         <div id="cfgTabContent_callout" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="sm:col-span-2">
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título de aviso por defecto</label>
-              <input type="text" id="cfgCallout_title" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgCallout_title" class="block text-xs font-bold text-slate-700 uppercase mb-1">Título de aviso por defecto</label>
+              <input type="text" id="cfgCallout_title" name="cfgCallout_title" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Color por defecto</label>
-              <select id="cfgCallout_theme" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgCallout_theme" class="block text-xs font-bold text-slate-700 uppercase mb-1">Color por defecto</label>
+              <select id="cfgCallout_theme" name="cfgCallout_theme" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="red">Rojo CCOO</option>
                 <option value="amber">Ámbar</option>
                 <option value="gray">Gris</option>
@@ -455,8 +455,8 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto de aviso por defecto</label>
-            <textarea id="cfgCallout_text" rows="2" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></textarea>
+            <label for="cfgCallout_text" class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto de aviso por defecto</label>
+            <textarea id="cfgCallout_text" name="cfgCallout_text" rows="2" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></textarea>
           </div>
         </div>
 
@@ -464,26 +464,26 @@
         <div id="cfgTabContent_button" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto del botón</label>
-              <input type="text" id="cfgButton_btnText" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgButton_btnText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Texto del botón</label>
+              <input type="text" id="cfgButton_btnText" name="cfgButton_btnText" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Enlace URL</label>
-              <input type="url" id="cfgButton_btnUrl" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgButton_btnUrl" class="block text-xs font-bold text-slate-700 uppercase mb-1">Enlace URL</label>
+              <input type="url" id="cfgButton_btnUrl" name="cfgButton_btnUrl" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Estilo de color</label>
-              <select id="cfgButton_style" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgButton_style" class="block text-xs font-bold text-slate-700 uppercase mb-1">Estilo de color</label>
+              <select id="cfgButton_style" name="cfgButton_style" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="red">Rojo CCOO</option>
                 <option value="dark">Negro</option>
                 <option value="outline">Borde rojo</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación</label>
-              <select id="cfgButton_align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgButton_align" class="block text-xs font-bold text-slate-700 uppercase mb-1">Alineación</label>
+              <select id="cfgButton_align" name="cfgButton_align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
                 <option value="center">Centrado</option>
                 <option value="left">Izquierda</option>
                 <option value="right">Derecha</option>
@@ -496,16 +496,16 @@
         <div id="cfgTabContent_closing" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Lema o despedida</label>
-              <input type="text" id="cfgClosing_closingLine" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgClosing_closingLine" class="block text-xs font-bold text-slate-700 uppercase mb-1">Lema o despedida</label>
+              <input type="text" id="cfgClosing_closingLine" name="cfgClosing_closingLine" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Firma en rojo</label>
-              <input type="text" id="cfgClosing_signatureRed" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-[#CC0000] focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgClosing_signatureRed" class="block text-xs font-bold text-slate-700 uppercase mb-1">Firma en rojo</label>
+              <input type="text" id="cfgClosing_signatureRed" name="cfgClosing_signatureRed" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-[#CC0000] focus:outline-none focus:border-[#CC0000]">
             </div>
           </div>
           <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
-            <input type="checkbox" id="cfgClosing_showHr" class="rounded text-[#CC0000]">
+            <input type="checkbox" id="cfgClosing_showHr" name="cfgClosing_showHr" class="rounded text-[#CC0000]">
             <span>Mostrar línea divisoria por defecto</span>
           </label>
         </div>
@@ -514,43 +514,67 @@
         <div id="cfgTabContent_footer" class="cfg-tab-pane hidden space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dirección (Línea 1)</label>
-              <input type="text" id="cfgFooter_addressLine1" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgFooter_addressLine1" class="block text-xs font-bold text-slate-700 uppercase mb-1">Dirección (Línea 1)</label>
+              <input type="text" id="cfgFooter_addressLine1" name="cfgFooter_addressLine1" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">CP y Municipio (Línea 2)</label>
-              <input type="text" id="cfgFooter_addressLine2" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
-            </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono</label>
-              <input type="text" id="cfgFooter_phone" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
-              <input type="email" id="cfgFooter_email" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgFooter_addressLine2" class="block text-xs font-bold text-slate-700 uppercase mb-1">CP y Municipio (Línea 2)</label>
+              <input type="text" id="cfgFooter_addressLine2" name="cfgFooter_addressLine2" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Etiqueta "Síguenos en:"</label>
-              <input type="text" id="cfgFooter_followLabel" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgFooter_phone" class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono</label>
+              <input type="text" id="cfgFooter_phone" name="cfgFooter_phone" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Usuario / Handle redes</label>
-              <input type="text" id="cfgFooter_socialHandleText" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold text-[#CC0000] focus:outline-none focus:border-[#CC0000]">
+              <label for="cfgFooter_email" class="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
+              <input type="email" id="cfgFooter_email" name="cfgFooter_email" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="cfgFooter_followLabel" class="block text-xs font-bold text-slate-700 uppercase mb-1">Etiqueta "Síguenos en:"</label>
+              <input type="text" id="cfgFooter_followLabel" name="cfgFooter_followLabel" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[#CC0000]">
+            </div>
+            <div>
+              <label for="cfgFooter_socialHandleText" class="block text-xs font-bold text-slate-700 uppercase mb-1">Usuario / Handle redes</label>
+              <input type="text" id="cfgFooter_socialHandleText" name="cfgFooter_socialHandleText" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold text-[#CC0000] focus:outline-none focus:border-[#CC0000]">
             </div>
           </div>
           <div class="border-t border-slate-200 pt-3 space-y-2">
-            <label class="block text-xs font-bold text-slate-700 uppercase">Enlaces de redes sociales:</label>
+            <label class="block text-xs font-bold text-slate-700 uppercase">Redes sociales visibles y enlaces:</label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <input type="url" id="cfgFooter_xUrl" placeholder="URL X" class="rounded border border-slate-300 px-2 py-1">
-              <input type="url" id="cfgFooter_fbUrl" placeholder="URL Facebook" class="rounded border border-slate-300 px-2 py-1">
-              <input type="url" id="cfgFooter_instaUrl" placeholder="URL Instagram" class="rounded border border-slate-300 px-2 py-1">
-              <input type="url" id="cfgFooter_ytUrl" placeholder="URL YouTube" class="rounded border border-slate-300 px-2 py-1">
-              <input type="url" id="cfgFooter_tiktokUrl" placeholder="URL TikTok" class="rounded border border-slate-300 px-2 py-1">
-              <input type="url" id="cfgFooter_bskyUrl" placeholder="URL Bluesky" class="rounded border border-slate-300 px-2 py-1">
+              <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                <input type="checkbox" id="cfgFooter_showX" name="cfgFooter_showX" class="rounded text-[#CC0000]">
+                <label for="cfgFooter_showX" class="font-bold w-16 shrink-0 cursor-pointer">X:</label>
+                <input type="url" id="cfgFooter_xUrl" name="cfgFooter_xUrl" placeholder="URL X" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white">
+              </div>
+              <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                <input type="checkbox" id="cfgFooter_showFb" name="cfgFooter_showFb" class="rounded text-[#CC0000]">
+                <label for="cfgFooter_showFb" class="font-bold w-16 shrink-0 cursor-pointer">Facebook:</label>
+                <input type="url" id="cfgFooter_fbUrl" name="cfgFooter_fbUrl" placeholder="URL Facebook" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white">
+              </div>
+              <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                <input type="checkbox" id="cfgFooter_showInsta" name="cfgFooter_showInsta" class="rounded text-[#CC0000]">
+                <label for="cfgFooter_showInsta" class="font-bold w-16 shrink-0 cursor-pointer">Instagram:</label>
+                <input type="url" id="cfgFooter_instaUrl" name="cfgFooter_instaUrl" placeholder="URL Instagram" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white">
+              </div>
+              <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                <input type="checkbox" id="cfgFooter_showYt" name="cfgFooter_showYt" class="rounded text-[#CC0000]">
+                <label for="cfgFooter_showYt" class="font-bold w-16 shrink-0 cursor-pointer">YouTube:</label>
+                <input type="url" id="cfgFooter_ytUrl" name="cfgFooter_ytUrl" placeholder="URL YouTube" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white">
+              </div>
+              <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                <input type="checkbox" id="cfgFooter_showTiktok" name="cfgFooter_showTiktok" class="rounded text-[#CC0000]">
+                <label for="cfgFooter_showTiktok" class="font-bold w-16 shrink-0 cursor-pointer">TikTok:</label>
+                <input type="url" id="cfgFooter_tiktokUrl" name="cfgFooter_tiktokUrl" placeholder="URL TikTok" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white">
+              </div>
+              <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                <input type="checkbox" id="cfgFooter_showBsky" name="cfgFooter_showBsky" class="rounded text-[#CC0000]">
+                <label for="cfgFooter_showBsky" class="font-bold w-16 shrink-0 cursor-pointer">Bluesky:</label>
+                <input type="url" id="cfgFooter_bskyUrl" name="cfgFooter_bskyUrl" placeholder="URL Bluesky" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white">
+              </div>
             </div>
           </div>
         </div>
@@ -589,7 +613,7 @@
         <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-end gap-2.5">
           <div class="flex-1 min-w-[200px]">
             <label for="inputDraftName" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Guardar correo actual como plantilla</label>
-            <input type="text" id="inputDraftName" placeholder="Nombre de la plantilla..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
+            <input type="text" id="inputDraftName" name="inputDraftName" placeholder="Nombre de la plantilla..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">
           </div>
           <button type="button" id="btnSaveDraft" class="bg-[#CC0000] hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition shrink-0 h-[34px]">
             <i class="fa-solid fa-floppy-disk mr-1"></i>Guardar en Drive
@@ -956,10 +980,14 @@
             '</a></td>';
         });
 
-        const followText = escapeHtml((blk.followLabel || 'Síguenos en:').trim());
-        const handleText = escapeHtml((blk.socialHandleText || '@ccoomadridsur').trim());
+        const followText = (blk.followLabel !== undefined && blk.followLabel !== null)
+          ? escapeHtml(blk.followLabel.trim())
+          : 'Síguenos en:';
+        const handleText = (blk.socialHandleText !== undefined && blk.socialHandleText !== null)
+          ? escapeHtml(blk.socialHandleText.trim())
+          : '';
 
-        const socialRow = (activeIcons.length > 0) ?
+        const socialRow = (activeIcons.length > 0 || handleText) ?
           '<tr><td align="center" valign="middle" style="padding-top: 14px;">' +
           '<table border="0" cellspacing="0" cellpadding="0" align="center"><tr>' +
           (followText ? '<td valign="middle" style="padding-right: 8px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #222222; white-space: nowrap;">' + followText + '</td>' : '') +
@@ -1005,6 +1033,11 @@
       document.getElementById('rawHtmlOutput').value = fullHtml;
       const count = blocksState.filter(b => b.visible).length;
       document.getElementById('blockCounterLabel').textContent = count + ' de ' + blocksState.length + ' bloques activos';
+      
+      const desktopLiveViewport = document.getElementById('desktopLiveViewport');
+      if (desktopLiveViewport) {
+        desktopLiveViewport.style.maxWidth = userSettings.general.desktopMaxWidth || '800px';
+      }
       saveLocalWorkingState();
     }
 
@@ -1066,18 +1099,22 @@
 
     // PANEL DE EDICIÓN DE BLOQUES
     function renderBlockEditorInterior(blk, index) {
+      const pfx = 'blk_' + index + '_';
       if (blk.type === 'header') {
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
-          '<div class="sm:col-span-2"><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Antetítulo</label>' +
-          '<input type="text" data-field="kicker" value="' + escapeHtml(blk.kicker) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>' +
-          '<select data-field="align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div class="sm:col-span-2">' +
+          '<label for="' + pfx + 'kicker" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Antetítulo</label>' +
+          '<input type="text" id="' + pfx + 'kicker" name="kicker" data-field="kicker" value="' + escapeHtml(blk.kicker) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'align" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>' +
+          '<select id="' + pfx + 'align" name="align" data-field="align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="left" ' + (blk.align === 'left' ? 'selected' : '') + '>Izquierda</option>' +
           '<option value="center" ' + (blk.align === 'center' ? 'selected' : '') + '>Centrado</option>' +
           '</select></div></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título Principal</label>' +
-          '<input type="text" data-field="title" value="' + escapeHtml(blk.title) + '" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'title" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título Principal</label>' +
+          '<input type="text" id="' + pfx + 'title" name="title" data-field="title" value="' + escapeHtml(blk.title) + '" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>';
       }
 
@@ -1085,40 +1122,47 @@
         const method = blk.method || 'edes';
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Origen de la imagen</label>' +
-          '<select data-field="method" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div>' +
+          '<label for="' + pfx + 'method" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Origen de la imagen</label>' +
+          '<select id="' + pfx + 'method" name="method" data-field="method" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="edes" ' + (method === 'edes' ? 'selected' : '') + '>ID de EDES (CCOO)</option>' +
           '<option value="url" ' + (method === 'url' ? 'selected' : '') + '>URL Directa</option>' +
           '</select></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>' +
-          '<select data-field="align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div>' +
+          '<label for="' + pfx + 'align" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>' +
+          '<select id="' + pfx + 'align" name="align" data-field="align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="center" ' + (blk.align === 'center' ? 'selected' : '') + '>Centrado</option>' +
           '<option value="left" ' + (blk.align === 'left' ? 'selected' : '') + '>Izquierda</option>' +
           '<option value="right" ' + (blk.align === 'right' ? 'selected' : '') + '>Derecha</option>' +
           '</select></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Tamaño máximo</label>' +
-          '<select data-field="maxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div>' +
+          '<label for="' + pfx + 'maxWidth" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Tamaño máximo</label>' +
+          '<select id="' + pfx + 'maxWidth" name="maxWidth" data-field="maxWidth" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="100%" ' + (blk.maxWidth === '100%' ? 'selected' : '') + '>Ancho completo</option>' +
           '<option value="500px" ' + (blk.maxWidth === '500px' ? 'selected' : '') + '>500px</option>' +
           '<option value="400px" ' + (blk.maxWidth === '400px' ? 'selected' : '') + '>400px</option>' +
           '<option value="300px" ' + (blk.maxWidth === '300px' ? 'selected' : '') + '>300px</option>' +
           '</select></div></div>' +
           (method === 'edes' ?
-            '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">ID de EDES de la imagen</label>' +
-            '<input type="text" data-field="edesId" value="' + escapeHtml(blk.edesId) + '" placeholder="Ej: cartel_11n_sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' :
-            '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">URL directa de la imagen</label>' +
-            '<input type="url" data-field="imageUrl" value="' + escapeHtml(blk.imageUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>'
+            '<div>' +
+            '<label for="' + pfx + 'edesId" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">ID de EDES de la imagen</label>' +
+            '<input type="text" id="' + pfx + 'edesId" name="edesId" data-field="edesId" value="' + escapeHtml(blk.edesId) + '" placeholder="Ej: cartel_11n_sur" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' :
+            '<div>' +
+            '<label for="' + pfx + 'imageUrl" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">URL directa de la imagen</label>' +
+            '<input type="url" id="' + pfx + 'imageUrl" name="imageUrl" data-field="imageUrl" value="' + escapeHtml(blk.imageUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>'
           ) +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace al pulsar (opcional)</label>' +
-          '<input type="url" data-field="linkUrl" value="' + escapeHtml(blk.linkUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto alternativo (Alt)</label>' +
-          '<input type="text" data-field="altText" value="' + escapeHtml(blk.altText) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'linkUrl" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace al pulsar (opcional)</label>' +
+          '<input type="url" id="' + pfx + 'linkUrl" name="linkUrl" data-field="linkUrl" value="' + escapeHtml(blk.linkUrl) + '" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'altText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto alternativo (Alt)</label>' +
+          '<input type="text" id="' + pfx + 'altText" name="altText" data-field="altText" value="' + escapeHtml(blk.altText) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>' +
           '<div class="flex items-center justify-between gap-3">' +
-          '<input type="text" data-field="caption" value="' + escapeHtml(blk.caption) + '" placeholder="Pie de foto opcional..." class="flex-1 rounded-lg border border-slate-300 px-3 py-1 text-xs focus:outline-none focus:border-[#CC0000]">' +
+          '<input type="text" name="caption" data-field="caption" value="' + escapeHtml(blk.caption) + '" placeholder="Pie de foto opcional..." class="flex-1 rounded-lg border border-slate-300 px-3 py-1 text-xs focus:outline-none focus:border-[#CC0000]">' +
           '<label class="inline-flex items-center gap-1.5 text-xs text-slate-700 cursor-pointer">' +
-          '<input type="checkbox" data-field-bool="rounded" ' + (blk.rounded ? 'checked' : '') + ' class="rounded text-[#CC0000]"><span>Bordes redondeados</span></label>' +
+          '<input type="checkbox" name="rounded" data-field-bool="rounded" ' + (blk.rounded ? 'checked' : '') + ' class="rounded text-[#CC0000]"><span>Bordes redondeados</span></label>' +
           '</div></div>';
       }
 
@@ -1151,36 +1195,43 @@
       if (blk.type === 'callout') {
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
-          '<div class="sm:col-span-2"><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título</label>' +
-          '<input type="text" data-field="title" value="' + escapeHtml(blk.title) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Color</label>' +
-          '<select data-field="theme" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div class="sm:col-span-2">' +
+          '<label for="' + pfx + 'title" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Título</label>' +
+          '<input type="text" id="' + pfx + 'title" name="title" data-field="title" value="' + escapeHtml(blk.title) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'theme" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Color</label>' +
+          '<select id="' + pfx + 'theme" name="theme" data-field="theme" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="red" ' + (blk.theme === 'red' ? 'selected' : '') + '>Rojo</option>' +
           '<option value="amber" ' + (blk.theme === 'amber' ? 'selected' : '') + '>Ámbar</option>' +
           '<option value="gray" ' + (blk.theme === 'gray' ? 'selected' : '') + '>Gris</option>' +
           '</select></div></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto del aviso</label>' +
-          '<textarea rows="2" data-field="text" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">' + escapeHtml(blk.text) + '</textarea></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'text" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto del aviso</label>' +
+          '<textarea id="' + pfx + 'text" name="text" rows="2" data-field="text" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]">' + escapeHtml(blk.text) + '</textarea></div>' +
           '</div>';
       }
 
       if (blk.type === 'button') {
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto</label>' +
-          '<input type="text" data-field="btnText" value="' + escapeHtml(blk.btnText) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-bold focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace URL</label>' +
-          '<input type="url" data-field="btnUrl" value="' + escapeHtml(blk.btnUrl) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'btnText" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Texto</label>' +
+          '<input type="text" id="' + pfx + 'btnText" name="btnText" data-field="btnText" value="' + escapeHtml(blk.btnText) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-bold focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'btnUrl" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Enlace URL</label>' +
+          '<input type="url" id="' + pfx + 'btnUrl" name="btnUrl" data-field="btnUrl" value="' + escapeHtml(blk.btnUrl) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Color</label>' +
-          '<select data-field="style" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div>' +
+          '<label for="' + pfx + 'style" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Color</label>' +
+          '<select id="' + pfx + 'style" name="style" data-field="style" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="red" ' + (blk.style === 'red' ? 'selected' : '') + '>Rojo CCOO</option>' +
           '<option value="dark" ' + (blk.style === 'dark' ? 'selected' : '') + '>Negro</option>' +
           '<option value="outline" ' + (blk.style === 'outline' ? 'selected' : '') + '>Borde rojo</option>' +
           '</select></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>' +
-          '<select data-field="align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
+          '<div>' +
+          '<label for="' + pfx + 'align" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Alineación</label>' +
+          '<select id="' + pfx + 'align" name="align" data-field="align" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm bg-white focus:outline-none focus:border-[#CC0000]">' +
           '<option value="center" ' + (blk.align === 'center' ? 'selected' : '') + '>Centrado</option>' +
           '<option value="left" ' + (blk.align === 'left' ? 'selected' : '') + '>Izquierda</option>' +
           '<option value="right" ' + (blk.align === 'right' ? 'selected' : '') + '>Derecha</option>' +
@@ -1190,24 +1241,60 @@
       if (blk.type === 'closing') {
         return '<div class="space-y-3">' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Lema o despedida</label>' +
-          '<input type="text" data-field="closingLine" value="' + escapeHtml(blk.closingLine) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
-          '<div><label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Firma en rojo</label>' +
-          '<input type="text" data-field="signatureRed" value="' + escapeHtml(blk.signatureRed) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-[#CC0000] focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'closingLine" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Lema o despedida</label>' +
+          '<input type="text" id="' + pfx + 'closingLine" name="closingLine" data-field="closingLine" value="' + escapeHtml(blk.closingLine) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div>' +
+          '<label for="' + pfx + 'signatureRed" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Firma en rojo</label>' +
+          '<input type="text" id="' + pfx + 'signatureRed" name="signatureRed" data-field="signatureRed" value="' + escapeHtml(blk.signatureRed) + '" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-[#CC0000] focus:outline-none focus:border-[#CC0000]"></div>' +
           '</div>' +
           '<label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer">' +
-          '<input type="checkbox" data-field-bool="showHr" ' + (blk.showHr ? 'checked' : '') + ' class="rounded text-[#CC0000]"><span>Mostrar línea divisoria</span></label>' +
+          '<input type="checkbox" name="showHr" data-field-bool="showHr" ' + (blk.showHr ? 'checked' : '') + ' class="rounded text-[#CC0000]"><span>Mostrar línea divisoria</span></label>' +
           '</div>';
       }
 
       if (blk.type === 'footer_ucsur') {
-        return '<div class="space-y-3">' +
+        return '<div class="space-y-4">' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div><label for="' + pfx + 'addr1" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Dirección (Línea 1)</label><input type="text" id="' + pfx + 'addr1" name="addressLine1" data-field="addressLine1" value="' + escapeHtml(blk.addressLine1) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div><label for="' + pfx + 'addr2" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">CP y Municipio (Línea 2)</label><input type="text" id="' + pfx + 'addr2" name="addressLine2" data-field="addressLine2" value="' + escapeHtml(blk.addressLine2) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
+          '</div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div><label for="' + pfx + 'phone" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Teléfono</label><input type="text" id="' + pfx + 'phone" name="phone" data-field="phone" value="' + escapeHtml(blk.phone) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div><label for="' + pfx + 'email" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Email</label><input type="email" id="' + pfx + 'email" name="email" data-field="email" value="' + escapeHtml(blk.email) + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#CC0000]"></div>' +
+          '</div>' +
+          '<div class="border-t border-slate-200 pt-3 space-y-3">' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+          '<div><label for="' + pfx + 'follow" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Etiqueta "Síguenos en:"</label><input type="text" id="' + pfx + 'follow" name="followLabel" data-field="followLabel" value="' + escapeHtml(blk.followLabel !== undefined ? blk.followLabel : 'Síguenos en:') + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-[#CC0000]"></div>' +
+          '<div><label for="' + pfx + 'handle" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Usuario / Handle redes</label><input type="text" id="' + pfx + 'handle" name="socialHandleText" data-field="socialHandleText" value="' + escapeHtml(blk.socialHandleText !== undefined ? blk.socialHandleText : '@ccoomadridsur') + '" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold text-[#CC0000] focus:outline-none focus:border-[#CC0000]"></div>' +
+          '</div>' +
+          '<label class="block text-[11px] font-bold text-slate-700 uppercase">Redes sociales activas:</label>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">' +
-          '<div><label class="block font-bold text-slate-600 mb-1">Dirección Línea 1</label><input type="text" data-field="addressLine1" value="' + escapeHtml(blk.addressLine1) + '" class="w-full rounded border px-2 py-1"></div>' +
-          '<div><label class="block font-bold text-slate-600 mb-1">Línea 2 (CP Municipio)</label><input type="text" data-field="addressLine2" value="' + escapeHtml(blk.addressLine2) + '" class="w-full rounded border px-2 py-1"></div>' +
-          '<div><label class="block font-bold text-slate-600 mb-1">Teléfono</label><input type="text" data-field="phone" value="' + escapeHtml(blk.phone) + '" class="w-full rounded border px-2 py-1"></div>' +
-          '<div><label class="block font-bold text-slate-600 mb-1">Email</label><input type="email" data-field="email" value="' + escapeHtml(blk.email) + '" class="w-full rounded border px-2 py-1"></div>' +
-          '</div></div>';
+          '<div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">' +
+          '<input type="checkbox" name="showX" data-field-bool="showX" ' + (blk.showX ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span class="font-bold w-16 shrink-0">X:</span>' +
+          '<input type="url" name="xUrl" data-field="xUrl" value="' + escapeHtml(blk.xUrl) + '" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white"></div>' +
+          '<div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">' +
+          '<input type="checkbox" name="showFb" data-field-bool="showFb" ' + (blk.showFb ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span class="font-bold w-16 shrink-0">Facebook:</span>' +
+          '<input type="url" name="fbUrl" data-field="fbUrl" value="' + escapeHtml(blk.fbUrl) + '" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white"></div>' +
+          '<div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">' +
+          '<input type="checkbox" name="showInsta" data-field-bool="showInsta" ' + (blk.showInsta ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span class="font-bold w-16 shrink-0">Instagram:</span>' +
+          '<input type="url" name="instaUrl" data-field="instaUrl" value="' + escapeHtml(blk.instaUrl) + '" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white"></div>' +
+          '<div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">' +
+          '<input type="checkbox" name="showYt" data-field-bool="showYt" ' + (blk.showYt ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span class="font-bold w-16 shrink-0">YouTube:</span>' +
+          '<input type="url" name="ytUrl" data-field="ytUrl" value="' + escapeHtml(blk.ytUrl) + '" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white"></div>' +
+          '<div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">' +
+          '<input type="checkbox" name="showTiktok" data-field-bool="showTiktok" ' + (blk.showTiktok ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span class="font-bold w-16 shrink-0">TikTok:</span>' +
+          '<input type="url" name="tiktokUrl" data-field="tiktokUrl" value="' + escapeHtml(blk.tiktokUrl) + '" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white"></div>' +
+          '<div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">' +
+          '<input type="checkbox" name="showBsky" data-field-bool="showBsky" ' + (blk.showBsky ? 'checked' : '') + ' class="rounded text-[#CC0000]">' +
+          '<span class="font-bold w-16 shrink-0">Bluesky:</span>' +
+          '<input type="url" name="bskyUrl" data-field="bskyUrl" value="' + escapeHtml(blk.bskyUrl) + '" class="flex-1 min-w-0 border border-slate-300 rounded px-2 py-1 bg-white"></div>' +
+          '</div></div></div>';
       }
 
       return '';
@@ -1431,13 +1518,19 @@
       document.getElementById('cfgFooter_addressLine2').value = userSettings.footer.addressLine2 || '';
       document.getElementById('cfgFooter_phone').value = userSettings.footer.phone || '';
       document.getElementById('cfgFooter_email').value = userSettings.footer.email || '';
-      document.getElementById('cfgFooter_followLabel').value = userSettings.footer.followLabel || '';
-      document.getElementById('cfgFooter_socialHandleText').value = userSettings.footer.socialHandleText || '';
+      document.getElementById('cfgFooter_followLabel').value = (userSettings.footer.followLabel !== undefined) ? userSettings.footer.followLabel : 'Síguenos en:';
+      document.getElementById('cfgFooter_socialHandleText').value = (userSettings.footer.socialHandleText !== undefined) ? userSettings.footer.socialHandleText : '@ccoomadridsur';
+      document.getElementById('cfgFooter_showX').checked = !!userSettings.footer.showX;
       document.getElementById('cfgFooter_xUrl').value = userSettings.footer.xUrl || '';
+      document.getElementById('cfgFooter_showFb').checked = !!userSettings.footer.showFb;
       document.getElementById('cfgFooter_fbUrl').value = userSettings.footer.fbUrl || '';
+      document.getElementById('cfgFooter_showInsta').checked = !!userSettings.footer.showInsta;
       document.getElementById('cfgFooter_instaUrl').value = userSettings.footer.instaUrl || '';
+      document.getElementById('cfgFooter_showYt').checked = !!userSettings.footer.showYt;
       document.getElementById('cfgFooter_ytUrl').value = userSettings.footer.ytUrl || '';
+      document.getElementById('cfgFooter_showTiktok').checked = !!userSettings.footer.showTiktok;
       document.getElementById('cfgFooter_tiktokUrl').value = userSettings.footer.tiktokUrl || '';
+      document.getElementById('cfgFooter_showBsky').checked = !!userSettings.footer.showBsky;
       document.getElementById('cfgFooter_bskyUrl').value = userSettings.footer.bskyUrl || '';
     }
 
@@ -1472,11 +1565,17 @@
       userSettings.footer.email = document.getElementById('cfgFooter_email').value;
       userSettings.footer.followLabel = document.getElementById('cfgFooter_followLabel').value;
       userSettings.footer.socialHandleText = document.getElementById('cfgFooter_socialHandleText').value;
+      userSettings.footer.showX = document.getElementById('cfgFooter_showX').checked;
       userSettings.footer.xUrl = document.getElementById('cfgFooter_xUrl').value;
+      userSettings.footer.showFb = document.getElementById('cfgFooter_showFb').checked;
       userSettings.footer.fbUrl = document.getElementById('cfgFooter_fbUrl').value;
+      userSettings.footer.showInsta = document.getElementById('cfgFooter_showInsta').checked;
       userSettings.footer.instaUrl = document.getElementById('cfgFooter_instaUrl').value;
+      userSettings.footer.showYt = document.getElementById('cfgFooter_showYt').checked;
       userSettings.footer.ytUrl = document.getElementById('cfgFooter_ytUrl').value;
+      userSettings.footer.showTiktok = document.getElementById('cfgFooter_showTiktok').checked;
       userSettings.footer.tiktokUrl = document.getElementById('cfgFooter_tiktokUrl').value;
+      userSettings.footer.showBsky = document.getElementById('cfgFooter_showBsky').checked;
       userSettings.footer.bskyUrl = document.getElementById('cfgFooter_bskyUrl').value;
     }
 
@@ -1491,17 +1590,41 @@
     document.getElementById('btnApplySettingsToCurrent').addEventListener('click', () => {
       readSettingsFromInputs();
       blocksState.forEach(blk => {
-        if (blk.type === 'footer_ucsur') Object.assign(blk, userSettings.footer);
+        if (blk.type === 'footer_ucsur') {
+          Object.assign(blk, userSettings.footer);
+        }
         if (blk.type === 'richtext') {
           blk.fontSize = userSettings.richtext.fontSize;
           blk.textAlign = userSettings.richtext.textAlign;
         }
+        if (blk.type === 'header') {
+          blk.align = userSettings.header.align;
+          if (!blk.kicker) blk.kicker = userSettings.header.kicker;
+        }
+        if (blk.type === 'image') {
+          blk.align = userSettings.image.align;
+          blk.maxWidth = userSettings.image.maxWidth;
+          blk.rounded = userSettings.image.rounded;
+          blk.method = userSettings.image.method;
+        }
+        if (blk.type === 'button') {
+          blk.style = userSettings.button.style;
+          blk.align = userSettings.button.align;
+        }
+        if (blk.type === 'callout') {
+          blk.theme = userSettings.callout.theme;
+        }
+        if (blk.type === 'closing') {
+          blk.showHr = userSettings.closing.showHr;
+          blk.signatureRed = userSettings.closing.signatureRed;
+        }
       });
       renderAllBlocksUI();
+      updatePreviewOnly();
       settingsModal.classList.add('hidden');
       settingsModal.classList.remove('flex');
       pushCloudData();
-      showToast('Aplicado al correo', 'Configuración actualizada en los bloques.');
+      showToast('Aplicado al correo', 'Configuración actualizada en todos los bloques.');
     });
 
     document.getElementById('btnResetSettingsDefault').addEventListener('click', () => {
